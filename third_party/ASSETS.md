@@ -2,6 +2,8 @@
 
 The bundled visual files below were produced for Ally Ahead. They are project artwork, rather than stock photographs or media copied from the public case sources. The homepage and character artwork were generated and edited with OpenAI image generation; reception animation layers were cropped from the project character artwork. The wordmark was generated and refined for the project. The favicon is project SVG geometry, with raster icon derivatives.
 
+The README screenshots show the project’s own interface in a fresh session, with no user conversations, uploaded documents or payment records.
+
 | Files | Origin |
 | --- | --- |
 | `apps/web/src/assets/entrance.webp`, `clarify.webp`, `compare.webp`, `agree.webp`, `success.webp` | Project-generated architectural and business illustrations |
@@ -11,6 +13,7 @@ The bundled visual files below were produced for Ally Ahead. They are project ar
 | `apps/web/src/assets/reception/forearm-left.webp`, `forearm-right.webp`, `laptop-front.webp` | Layers cropped from project character artwork |
 | `apps/web/src/assets/reception/ok-forearm-v1.png` | Project-generated gesture based on the project character |
 | `apps/web/public/favicon.svg`, `favicon.ico`, `apple-touch-icon.png` | Project icon geometry and its raster derivatives |
+| `docs/images/homepage.png`, `docs/images/reception.png` | Screenshots of the project UI and its bundled artwork |
 
 To the extent the project owner holds licensable copyright in these bundled assets, they are supplied under the root [MIT License](../LICENSE). This does not grant trademark rights in the Ally Ahead name, wordmark or application icon, or imply endorsement. AI-generated artwork is not represented as exclusive.
 

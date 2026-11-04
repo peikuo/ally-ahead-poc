@@ -7,6 +7,16 @@ An AI reception POC for the PayPal AI Hackathon. Ally Ahead helps a business tur
 
 The demo follows a fictional business from its first conversation through requirements clarification to a **USD 500 PayPal Sandbox payment**, simulated publication and a user-requested full refund. Sandbox payments use test funds. Payment does not select an expert, create a contract or start work.
 
+## Preview
+
+The bilingual homepage introduces the journey from a business idea to a clear next step.
+
+![Ally Ahead English homepage with an entrance illustration and a call to discuss your needs](docs/images/homepage.png)
+
+Reception brings the conversation, recorded achievements, documents and Sandbox payment tools together.
+
+![Ally Ahead reception in a fresh session, with its AI receptionist and conversation input](docs/images/reception.png)
+
 ## The experience
 
 1. Start from the Chinese/English homepage and enter reception without a platform account.
