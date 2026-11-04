@@ -2,6 +2,7 @@ import {
   Id,
   ReceptionPaymentTerms,
   ReceptionPaymentView,
+  ReceptionCurrentPayment,
   PrepareReceptionPayment,
   CreateReceptionPaymentOrder,
   CaptureReceptionPayment,
@@ -15,6 +16,8 @@ export type PaymentTerms = z.infer<typeof ReceptionPaymentTerms>;
 const path = (id: string) =>
   `/poc-payments/${encodeURIComponent(Id.parse(id))}`;
 export const receptionPayments = {
+  current: (signal: AbortSignal) =>
+    receptionRequest("/poc-payments/current", ReceptionCurrentPayment, signal),
   terms: (signal: AbortSignal) =>
     receptionRequest("/poc-payments/terms", ReceptionPaymentTerms, signal),
   read: (id: string, signal: AbortSignal) =>

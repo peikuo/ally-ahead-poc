@@ -2,6 +2,9 @@
 
 An AI reception POC for the PayPal AI Hackathon. Ally Ahead helps a business turn an initial idea into a requirements specification that people can discuss, revise and explicitly approve before taking the next step.
 
+- [Try the POC](https://ally-poc.aixagent.cloud/)
+- [Watch the demo video](https://youtu.be/s--7eNOinEk)
+
 The demo follows a fictional business from its first conversation through requirements clarification to a **USD 500 PayPal Sandbox payment**, simulated publication and a user-requested full refund. Sandbox payments use test funds. Payment does not select an expert, create a contract or start work.
 
 ## The experience
@@ -66,7 +69,9 @@ Restart the app after configuration. The default `AGENT_MODE=disabled` sends no 
 
 Set `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` in local `.env` to the credentials of a **PayPal Sandbox app**. The secret stays on the server; the client ID is public when checkout is enabled. REST traffic is pinned to `https://api-m.sandbox.paypal.com`.
 
-The PayPal JS SDK loads after the user separately agrees to test checkout. A Sandbox buyer account may be needed in the PayPal window. The amount is **USD 500.00**, with test funds only. The page distinguishes a confirmed document, payment consent, verified receipt and simulated publication. Keep the temporary cookie and receipt URL during the demonstration.
+The checkout API, payment state machine, PayPal client and PostgreSQL payment adapter are grouped under `apps/api/src/modules/reception-payments/`. The reception application supplies session authorization and the confirmed-document reader. Frontend payment state, SDK callbacks and presentation are separated.
+
+The PayPal JS SDK loads after the user separately agrees to test checkout. A Sandbox buyer account may be needed in the PayPal window. The amount is **USD 500.00**, with test funds only. The page distinguishes a confirmed document, payment consent, verified receipt and simulated publication. Keep the temporary session cookie during the demonstration. Re-entering reception can recover that session's receipt even without a `paymentId` URL; later document revisions do not hide it. If a refund response is lost, check its status and explicitly choose recovery of the previous refund. Recovery reuses the original request within its idempotency window; loading the page and checking status do not issue refunds.
 
 ## Consultation trace viewer
 
