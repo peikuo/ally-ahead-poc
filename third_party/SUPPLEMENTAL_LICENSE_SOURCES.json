@@ -1,0 +1,69 @@
+[
+  {
+    "package": "@aws-sdk/credential-provider-http",
+    "version": "3.972.82",
+    "source": "https://raw.githubusercontent.com/aws/aws-sdk-js-v3/v3.1161.0/LICENSE",
+    "sha256": "edea91454b811f127fbdea3d86f378f6719bd372ed440abf82b232f6fca06c3d"
+  },
+  {
+    "package": "@aws-sdk/credential-provider-login",
+    "version": "3.972.87",
+    "source": "https://raw.githubusercontent.com/aws/aws-sdk-js-v3/v3.1161.0/LICENSE",
+    "sha256": "edea91454b811f127fbdea3d86f378f6719bd372ed440abf82b232f6fca06c3d"
+  },
+  {
+    "package": "@aws-sdk/nested-clients",
+    "version": "3.997.54",
+    "source": "https://raw.githubusercontent.com/aws/aws-sdk-js-v3/v3.1161.0/LICENSE",
+    "sha256": "edea91454b811f127fbdea3d86f378f6719bd372ed440abf82b232f6fca06c3d"
+  },
+  {
+    "package": "@napi-rs/canvas-darwin-arm64",
+    "version": "1.1.0",
+    "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/v1.1.0/LICENSE",
+    "sha256": "0b8e3b4f0042f33677406344854c1dcce3a2878eb3a3f6baee58c6f5752655ce"
+  },
+  {
+    "package": "@rolldown/binding-darwin-arm64",
+    "version": "1.2.16",
+    "source": "https://raw.githubusercontent.com/rolldown/rolldown/v1.2.16/LICENSE",
+    "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734"
+  },
+  {
+    "package": "data-uri-to-buffer",
+    "version": "4.0.1",
+    "source": "https://registry.npmjs.org/data-uri-to-buffer/-/data-uri-to-buffer-4.0.1.tgz#package/README.md",
+    "sha256": "aa7c09d3ff3c4302fb26fb696cd1b2e24dcc71846c80406d037b021342e78e0e"
+  },
+  {
+    "package": "isarray",
+    "version": "1.0.0",
+    "source": "https://raw.githubusercontent.com/juliangruber/isarray/2a23a281f369e9ae06394c0fb4d2381355a6ba33/README.md",
+    "sha256": "66aa9feab8bb39aceebd69f2a357015d57ceab486d3c7a19ff8d3d4110a6d101"
+  },
+  {
+    "package": "pg-types",
+    "version": "2.2.0",
+    "source": "https://raw.githubusercontent.com/brianc/node-pg-types/d9d9dfb87eb50914043cbc178c301b7dd3b0c50d/README.md",
+    "sha256": "c565667e0560bba6502cda29fd9d461fd3acaf9dac24dda4d2758ce0f8b720cd"
+  },
+  {
+    "package": "pgpass",
+    "version": "1.0.5",
+    "source": "https://raw.githubusercontent.com/hoegaarden/pgpass/4230ed5e417ba6044ea7eb80b7c33db9ec301398/README.md",
+    "sha256": "f660a02f22de943c8c28a93791e8571c67f9088be93226fd526842b586cb4db4"
+  },
+  {
+    "package": "proxy-agent-negotiate",
+    "version": "1.1.0",
+    "source": "https://raw.githubusercontent.com/TooTallNate/proxy-agents/proxy-agent-negotiate%401.1.0/packages/proxy-agent/LICENSE",
+    "scope": "Shared MIT notice from the proxy-agents repository at the negotiate package release tag; negotiate declares MIT in its package metadata.",
+    "sha256": "8d8c55319c7729d57be811c747452636688d54f19701ee0752b6b15ad3771d9a"
+  },
+  {
+    "package": "standardwebhooks",
+    "version": "1.1.1",
+    "source": "https://raw.githubusercontent.com/standard-webhooks/standard-webhooks/b4d2c14fc5b4ccff3ff271e3b087dff812254c59/libraries/LICENSE",
+    "sha256": "5ec8c7b26b64d881a6706617bed25c049f97f2f35de034c756de8546fd6dbe27"
+  }
+]

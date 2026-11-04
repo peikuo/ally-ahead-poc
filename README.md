@@ -89,6 +89,8 @@ POC_TEST_DATABASE_URL=postgresql://USER:PASSWORD@127.0.0.1:5432/ally_poc_test pn
 
 The E2E test uses real HTTP, PostgreSQL and the native Pi SDK with an explicitly injected scripted provider, synthetic summaries and mocked PayPal responses. The browser test intercepts the PayPal SDK with a mock button. These fixtures do not create real payments or model requests; they are available only through the test scripts.
 
-## Credits
+## License and credits
+
+Ally Ahead's original code and documentation are licensed under the [MIT License](LICENSE), copyright 2026 peikuo. Third-party dependencies retain their respective licenses. See the [artwork and media inventory](third_party/ASSETS.md) for artwork provenance and licensing scope. No trademark rights or endorsement are granted by the project license.
 
 See [public case sources](docs/CASE_SOURCES.md) and [third-party notices](third_party/README.md). Case summaries are external references with source limitations, not this product's clients or promised outcomes. Pi's MIT copyright notice is preserved in [PI_LICENSE.txt](third_party/PI_LICENSE.txt).
