@@ -27,6 +27,8 @@ The POC covers anonymous reception, requirements preparation and the Sandbox dem
 
 Prerequisites: **Node 24.22.2**, **pnpm 10.32.1**, and **PostgreSQL 17+** or Docker Compose. The frontend and API are served from the same origin.
 
+Use `.node-version` or `.nvmrc` with your Node version manager. Check `node --version` and `pnpm --version` before installation; `.npmrc` enables strict engine checks so an incompatible toolchain fails instead of continuing with a warning.
+
 ```sh
 corepack enable
 corepack prepare pnpm@10.32.1 --activate
