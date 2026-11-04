@@ -1,0 +1,19 @@
+{
+  "name": "ally-ahead-poc",
+  "private": true,
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=24.22.2 <25"
+  },
+  "scripts": {
+    "build": "pnpm --filter @ally-ahead/contracts build && pnpm --filter @ally-ahead/web build && pnpm --filter @ally-ahead/api build",
+    "start": "node --env-file-if-exists=.env apps/api/dist/src/main.js",
+    "db:init": "node --env-file-if-exists=.env scripts/db-init.mjs",
+    "test": "pnpm build && node --test apps/api/dist/src/modules/reception-payments/*.test.js tests/*.test.mjs",
+    "test:e2e": "node --env-file-if-exists=.env tests/e2e.mjs",
+    "test:browser": "node --env-file-if-exists=.env tests/browser.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}

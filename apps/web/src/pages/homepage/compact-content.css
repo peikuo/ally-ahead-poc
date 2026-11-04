@@ -1,0 +1,271 @@
+.ally-homepage .content-hub {
+  padding: 72px var(--gutter);
+  align-items: start;
+}
+.ally-homepage .content-hub .editorial-heading h2 {
+  font-size: clamp(36px, 3.8vw, 58px);
+  line-height: 1.15;
+}
+.ally-homepage .content-hub .editorial-heading > .text-action {
+  margin-top: 32px;
+  color: var(--blue);
+}
+.ally-homepage .hub-content {
+  min-width: 0;
+}
+.ally-homepage .hub-tabs {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  border-bottom: 1px solid #dce1e8;
+  margin-bottom: 22px;
+}
+.ally-homepage .hub-tabs button {
+  position: relative;
+  background: none;
+  border: 0;
+  padding: 12px 0 16px;
+  font-size: 17px;
+  white-space: nowrap;
+  color: #69717d;
+}
+.ally-homepage .hub-tabs button[aria-selected="true"] {
+  color: var(--blue);
+}
+.ally-homepage .hub-tabs button[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--blue);
+}
+.ally-homepage .hub-panel:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 7px;
+}
+.ally-homepage .business-choice {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 26px 1fr 25px;
+  align-items: center;
+  gap: 18px;
+  border: 0;
+  border-bottom: 1px solid #dce1e8;
+  padding: 25px 0;
+  background: none;
+  text-align: left;
+}
+.ally-homepage .business-choice .choice-title {
+  font-size: clamp(23px, 1.9vw, 29px);
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+.ally-homepage .business-choice .row-number {
+  font-size: 14px;
+}
+.ally-homepage .business-choice:hover {
+  color: var(--blue);
+}
+.ally-homepage .business-choice .row-arrow {
+  font-size: 25px;
+}
+.ally-homepage .content-hub .faq-list summary {
+  font-size: 21px;
+  padding: 21px 0;
+}
+.ally-homepage .content-hub .faq-list details:first-child {
+  border-top: 0;
+}
+.ally-homepage .content-hub .faq-list p {
+  font-size: 18px;
+}
+.ally-homepage .hub-provider {
+  padding: 16px 0;
+}
+.ally-homepage .hub-provider .provider-statement {
+  font-size: clamp(23px, 2vw, 29px);
+  line-height: 1.65;
+  margin: 0 0 30px;
+}
+.ally-homepage .footer-compact {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 34px var(--gutter);
+}
+.ally-homepage .footer-compact .brand-art {
+  width: 190px;
+  height: 34px;
+}
+.ally-homepage .footer-compact nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  align-items: center;
+  margin-left: auto;
+  font-size: 15px;
+}
+.ally-homepage .footer-compact nav button {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+}
+.ally-homepage .footer-compact nav a:hover,
+.ally-homepage .footer-compact nav button:hover {
+  color: var(--blue);
+}
+.ally-homepage .footer-compact .back-top {
+  margin-left: 20px;
+  font-size: 14px;
+  color: #69717d;
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .ally-homepage .content-hub {
+    gap: 34px;
+    padding-block: 64px;
+  }
+  .ally-homepage .footer-compact {
+    gap: 24px;
+  }
+  .ally-homepage .footer-compact nav {
+    gap: 18px;
+  }
+  .ally-homepage .footer-compact .back-top {
+    margin-left: 0;
+  }
+}
+@media (max-width: 700px) {
+  .ally-homepage .content-hub {
+    padding-block: 52px;
+    gap: 28px;
+  }
+  .ally-homepage .content-hub .editorial-heading h2 {
+    font-size: 36px;
+  }
+  .ally-homepage .content-hub .editorial-heading > .text-action {
+    margin-top: 24px;
+  }
+  .ally-homepage .hub-tabs {
+    gap: 24px;
+    margin-bottom: 8px;
+  }
+  .ally-homepage .hub-tabs button {
+    font-size: 15px;
+  }
+  .ally-homepage .business-choice {
+    padding: 22px 0;
+    gap: 14px;
+    grid-template-columns: 20px 1fr 22px;
+  }
+  .ally-homepage .business-choice .choice-title {
+    font-size: clamp(19px, 5.4vw, 22px);
+  }
+  .ally-homepage .business-choice .row-arrow {
+    font-size: 23px;
+  }
+  .ally-homepage .content-hub .faq-list summary {
+    font-size: 19px;
+    padding-block: 20px;
+  }
+  .ally-homepage .content-hub .faq-list p {
+    font-size: 17px;
+  }
+  .ally-homepage .hub-provider .provider-statement {
+    font-size: 23px;
+  }
+  .ally-homepage .footer-compact {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    padding-block: 28px;
+  }
+  .ally-homepage .footer-compact .brand-art {
+    width: 145px;
+    height: 26px;
+  }
+  .ally-homepage .footer-compact nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin: 0;
+    font-size: 14px;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .ally-homepage .footer-compact .back-top {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 13px;
+  }
+}
+
+/* Persistent entrances let returning visitors bypass the visual introduction. */
+.ally-homepage .site-header .header-start {
+  background: var(--blue, #0648ff);
+  color: white;
+  padding: 11px 18px;
+  white-space: nowrap;
+}
+.ally-homepage .site-header .header-start::after {
+  display: none;
+}
+.ally-homepage .site-header nav > [data-entry="login"] {
+  display: block;
+  white-space: nowrap;
+}
+@media (min-width: 901px) and (max-width: 1200px) {
+  .ally-homepage .site-header .starting-link {
+    display: none;
+  }
+  .ally-homepage .site-header nav {
+    gap: 18px;
+  }
+}
+@media (max-width: 900px) {
+  .ally-homepage .site-header nav > .language {
+    display: none;
+  }
+  .ally-homepage .site-header {
+    gap: 12px;
+  }
+  .ally-homepage .site-header nav {
+    gap: 14px;
+  }
+  .ally-homepage .site-header .header-start {
+    padding: 9px 10px;
+  }
+  .ally-homepage .menu-language .language {
+    display: flex;
+    gap: 12px;
+  }
+  .ally-homepage .menu-language button {
+    font-size: 17px;
+  }
+}
+@media (max-width: 700px) {
+  .ally-homepage .site-header .brand-art {
+    width: 125px;
+    height: 24px;
+  }
+  .ally-homepage .site-header nav {
+    gap: 12px;
+  }
+}
+@media (max-width: 370px) {
+  .ally-homepage .site-header {
+    gap: 10px;
+  }
+  .ally-homepage .site-header .brand-art {
+    width: 102px;
+    height: 22px;
+  }
+  .ally-homepage .site-header nav {
+    gap: 10px;
+  }
+  .ally-homepage .site-header .header-start {
+    padding-inline: 8px;
+  }
+}

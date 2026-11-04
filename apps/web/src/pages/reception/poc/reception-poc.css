@@ -1,0 +1,19 @@
+.reception-poc-document { min-width: 0; font-size: 13px; line-height: 1.85; }
+.reception-poc-disclosure { margin: 0 0 16px; padding: 11px 13px; border: 1px solid #d9e5ff; border-radius: 9px; background: #f5f8ff; color: #576984; font-size: 12px; }
+.reception-poc-document-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-bottom: 16px; }
+.reception-poc-document-body { padding: 18px; margin-bottom: 20px; border: 1px solid #e2e8f1; border-radius: 10px; }
+.reception-poc-document label { display: block; font-size: 12px; }
+.reception-poc-document textarea { display: block; width: 100%; min-width: 0; margin: 7px 0 10px; padding: 10px 12px; border: 1px solid #cbd7ec; border-radius: 8px; resize: vertical; font: inherit; color: inherit; }
+.reception-poc-confirmation,
+.reception-poc-next { margin-top: 20px; padding-top: 14px; border-top: 1px solid #e2e8f1; }
+.reception-poc-payment { min-width: 0; font-size: 13px; line-height: 1.85; }
+.reception-poc-payment button { margin: 6px 12px 6px 0; }
+.reception-poc-payment-terms { margin: 16px 0; }
+.reception-poc-payment-terms > div { display: grid; grid-template-columns: 90px minmax(0,1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid #e2e8f1; }
+.reception-poc-payment-terms dt { color: #718098; font-size: 12px; }
+.reception-poc-payment-terms dd { margin: 0; overflow-wrap: anywhere; }
+.reception-poc-refund { border: 1px solid #dce5f5; border-radius: 9px; padding: 12px; margin-block: 12px; }
+@media (max-width: 700px) {
+  .reception-poc-document-body { padding: 13px; }
+  .reception-poc-document-actions { align-items: flex-start; }
+}

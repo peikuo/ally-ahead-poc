@@ -1,0 +1,35 @@
+.reception-entry-loading { min-height: 100svh; background: #fff; color: #242d3b; }
+.reception-entry-header { display: flex; align-items: center; justify-content: space-between; max-width: 1440px; min-height: 102px; margin: auto; padding: 22px 40px; border-bottom: 1px solid #e8edf4; }
+.reception-entry-header .brand img { width: 170px; }
+.reception-entry-header .quiet { color: #64728a; font-size: 12px; }
+.reception-entry-body { min-height: calc(100svh - 102px); display: grid; place-items: center; padding: 32px 24px 88px; }
+.reception-entry-content { width: min(420px, 100%); text-align: center; opacity: 0; transition: opacity 180ms ease; }
+.reception-entry-loading[data-visible="true"] .reception-entry-content { opacity: 1; }
+.reception-entry-portal { position: relative; width: 80px; height: 96px; margin: 0 auto 32px; border: 1px solid #dfe7f5; border-radius: 4px 4px 0 0; background: linear-gradient(180deg, #f7faff, #fff); }
+.reception-entry-portal::before { content: ''; position: absolute; inset: -46px -66px; background: radial-gradient(ellipse, #2457ff08, transparent 68%); pointer-events: none; }
+.reception-entry-portal i { position: absolute; inset: 12px 12px 0; border: 1px solid #e3eaf7; border-bottom: 0; }
+.reception-entry-portal span { position: absolute; bottom: -1px; left: 15px; width: 48px; height: 40px; background: linear-gradient(180deg, #2457ff25, #2457ff); clip-path: polygon(43% 0, 57% 0, 100% 100%, 0 100%); animation: reception-entry-breathe 2.8s ease-in-out infinite; }
+.reception-entry-content h1 { margin: 0; font-size: clamp(25px, 3vw, 30px); line-height: 1.4; font-weight: 500; letter-spacing: -.025em; }
+.reception-entry-intro { margin: 12px 0 28px; color: #8a95a5; font-size: 13px; line-height: 1.8; }
+.reception-entry-status { display: flex; justify-content: center; align-items: center; gap: 9px; min-height: 24px; margin: 0; color: #64728a; font-size: 12px; line-height: 1.8; }
+.reception-entry-status i { width: 5px; height: 5px; flex: none; border-radius: 50%; background: #2457ff; animation: reception-entry-breathe 1.8s ease-in-out infinite; }
+.reception-entry-actions { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 30px; }
+.reception-entry-actions .text-link { padding: 6px 0; min-height: 32px; font-size: 11px; color: #8a95a5; }
+.reception-entry-actions .text-link span { margin-left: 4px; }
+.reception-entry-actions .text-link:hover { color: #2457ff; }
+.reception-entry-loading[data-phase="failed"] .reception-entry-portal span { animation: none; opacity: .4; }
+@keyframes reception-entry-breathe { 50% { opacity: .38; } }
+@media (max-height: 800px) {
+  .reception-entry-header { min-height: 86px; padding-block: 14px; }
+  .reception-entry-body { min-height: calc(100svh - 86px); }
+}
+@media (max-width: 700px) {
+  .reception-entry-header { min-height: 76px; padding: 16px 20px; }
+  .reception-entry-header .brand img { width: 130px; }
+  .reception-entry-body { min-height: calc(100svh - 76px); padding: 28px 24px 76px; }
+  .reception-entry-portal { margin-bottom: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reception-entry-content { transition: none; }
+  .reception-entry-portal span, .reception-entry-status i { animation: none; }
+}

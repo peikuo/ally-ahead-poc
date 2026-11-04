@@ -1,0 +1,29 @@
+{
+  "name": "@ally-ahead/api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-agent-skill-resources.mjs"
+  },
+  "dependencies": {
+    "@ally-ahead/contracts": "workspace:*",
+    "@earendil-works/pi-agent-core": "1.4.0",
+    "@earendil-works/pi-ai": "1.4.0",
+    "@earendil-works/pi-coding-agent": "1.4.0",
+    "mammoth": "1.13.0",
+    "pdfjs-dist": "6.5.438",
+    "pg": "8.23.1",
+    "turndown": "7.2.4",
+    "turndown-plugin-gfm": "1.0.2",
+    "zod": "4.6.7",
+    "express": "5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "24.10.1",
+    "@types/pg": "8.20.0",
+    "@types/turndown": "5.0.6",
+    "typescript": "6.0.3"
+  }
+}

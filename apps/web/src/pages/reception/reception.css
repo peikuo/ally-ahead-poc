@@ -1,0 +1,1176 @@
+/* Shared face-to-face reception: current exchange in the center, records on demand. */
+.public-reception {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+.public-reception-header {
+  width: 100%;
+  flex-shrink: 0;
+  max-width: 1280px;
+  margin: auto;
+  padding: 22px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+.public-reception-header .brand img {
+  width: 155px;
+}
+.public-reception-header nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.public-reception > main {
+  max-width: 1280px;
+  padding: 18px 36px 28px;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+}
+.reception-stage {
+  position: relative;
+  overflow-anchor: none;
+  width: 100%;
+  max-width: 1160px;
+  margin: auto;
+}
+.reception-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.reception-stage-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 22px;
+  min-height: 36px;
+  margin-bottom: 14px;
+}
+.reception-stage-tools .text-link {
+  font-size: 12px;
+  min-height: 32px;
+  padding-block: 4px;
+}
+.reception-history-toggle span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.reception-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.reception-live-bubble {
+  position: relative;
+  width: fit-content;
+  min-width: min(160px, 100%);
+  max-width: min(680px, 100%);
+  padding: 21px 26px;
+  border: 1px solid #d9e3ff;
+  border-radius: 22px;
+  background: #fff;
+  z-index: 1;
+}
+.reception-live-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: calc(50% - 10px);
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-right: 1px solid #d9e3ff;
+  border-bottom: 1px solid #d9e3ff;
+  transform: rotate(45deg);
+}
+.reception-current-message > p,
+.reception-welcome,
+.reception-preparing {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.8;
+  text-align: center;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.reception-welcome {
+  font-weight: 500;
+  padding-block: 5px;
+}
+.reception-preparing {
+  font-size: 15px;
+  color: var(--muted);
+}
+.reception-stage .reception-character {
+  position: relative;
+  flex: none;
+  width: min(440px, 100%);
+  max-width: none;
+  margin-top: 12px;
+}
+.reception-canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+}
+.reception-canvas canvas,
+.reception-canvas img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.reception-presence {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #63718b;
+  text-align: center;
+  line-height: 1.8;
+  margin: 0 0 14px;
+}
+.reception-presence i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  flex-shrink: 0;
+}
+.reception-stage-speech {
+  margin-top: 10px;
+}
+.reception-stage-speech .reply-speech.is-compact {
+  justify-content: center;
+}
+.reception-input-area {
+  width: min(720px, 100%);
+  margin: auto;
+}
+.reception-composer {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+.reception-composer > label[for="agent-input"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.reception-composer textarea {
+  display: block;
+  width: 100%;
+  min-height: 68px;
+  max-height: 180px;
+  padding: 17px 105px 13px 17px;
+  resize: vertical;
+  border: 1px solid #d0daeb;
+  border-radius: 9px;
+  color: #25334b;
+  background: #fff;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.reception-composer textarea:focus {
+  outline: 2px solid #c6d5ff;
+  outline-offset: 2px;
+}
+.reception-composer > .between {
+  position: absolute;
+  top: 13px;
+  right: 12px;
+  gap: 6px;
+}
+.reception-composer > .between .primary {
+  min-width: 72px;
+  min-height: 40px;
+}
+.reception-composer > .between > small {
+  display: none;
+}
+.reception-composer > .check-label {
+  justify-content: center;
+  font-size: 10px;
+  line-height: 1.8;
+  color: #7b8599;
+  margin: 10px auto 0;
+  gap: 7px;
+}
+.reception-composer > .form-hint {
+  margin-top: 6px;
+  font-size: 10px;
+  text-align: center;
+}
+.reception-composer:has(.between > .quiet) textarea {
+  padding-right: 180px;
+}
+.reception-input-area > .notice,
+.reception-composer > .notice {
+  font-size: 12px;
+}
+.voice-input,
+.reply-speech {
+  padding: 15px 0;
+  margin: 12px 0;
+  border-block: 1px solid var(--line);
+  font-size: 12px;
+  line-height: 1.8;
+}
+.voice-input .actions,
+.reply-speech .actions {
+  flex-wrap: wrap;
+}
+.voice-input [data-state="recording"] {
+  color: #b22b32;
+}
+.reply-speech.is-compact {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 3px;
+}
+.reply-speech.is-compact .actions {
+  margin: 0;
+  gap: 7px;
+}
+.reply-speech.is-compact button {
+  font-size: 10px;
+  min-height: 29px;
+  padding: 4px 9px;
+  border-radius: 18px;
+}
+.reply-speech.is-compact > p {
+  font-size: 10px;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--muted);
+  text-align: right;
+}
+.reply-speech.is-compact > p:empty {
+  display: none;
+}
+.reply-speech.is-compact .notice {
+  font-size: 10px;
+  padding: 6px 9px;
+}
+/* Native modal gives the record drawer Escape, focus trapping, and focus return. */
+.reception-history {
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  width: min(400px, calc(100vw - 20px));
+  max-width: none;
+  height: 100svh;
+  max-height: 100svh;
+  padding: 25px 24px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  border-radius: 0;
+  box-shadow: -12px 0 60px #25334b12;
+  color: #25334b;
+}
+.reception-history::backdrop {
+  background: #1c2b431f;
+  backdrop-filter: none;
+}
+.reception-history-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 18px;
+}
+.reception-history-heading h2 {
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
+.reception-history-heading p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.8;
+}
+.reception-history-heading > button {
+  font-size: 25px;
+  line-height: 1;
+  padding: 0 4px;
+  min-height: 25px;
+}
+.reception-messages {
+  max-height: calc(100svh - 135px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 22px 3px;
+  scrollbar-width: thin;
+}
+.reception-message {
+  max-width: 96%;
+  margin-bottom: 22px;
+  overflow-wrap: anywhere;
+}
+.reception-message small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin: 0 0 6px;
+}
+.reception-message > .reception-markdown {
+  white-space: pre-wrap;
+  background: #f1f3f8;
+  border-radius: 4px 12px 12px 12px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 0;
+}
+.reception-message.user {
+  margin-left: auto;
+}
+.reception-message.user > .reception-markdown {
+  background: #edf2ff;
+  border-radius: 12px 4px 12px 12px;
+}
+.reception-interaction {
+  margin-top: 10px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+.reception-interaction h3 {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.8;
+  margin: 0 0 14px;
+}
+.reception-interaction h4 {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.reception-interaction > p.form-hint {
+  background: none;
+  padding: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+.reception-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.reception-options .secondary {
+  text-align: left;
+  justify-content: flex-start;
+  white-space: normal;
+}
+.reception-options .check-label {
+  width: 100%;
+  margin: 0;
+  padding: 10px;
+  background: #f6f8fc;
+  border-radius: 5px;
+}
+.reception-interaction dl {
+  margin: 0;
+}
+.reception-interaction dl > div {
+  position: relative;
+  padding: 12px 40px 12px 0;
+  border-top: 1px solid var(--line);
+}
+.reception-interaction dt {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.reception-interaction dd {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+}
+.reception-interaction dl .text-link {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  font-size: 11px;
+}
+.reception-interaction li {
+  font-size: 12px;
+  line-height: 1.9;
+}
+.reception-interaction .actions {
+  gap: 12px;
+  margin-top: 12px;
+}
+.reception-interaction .primary,
+.reception-interaction .secondary {
+  font-size: 12px;
+  max-width: 100%;
+}
+.reception-current-message .reception-interaction {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  margin-top: 15px;
+}
+.reception-current-message .reception-options {
+  justify-content: center;
+  margin-bottom: 6px;
+}
+.reception-current-message .reception-alternatives {
+  justify-content: center;
+  margin-top: 5px;
+  gap: 18px;
+}
+.reception-current-message .reception-alternatives button {
+  min-height: 27px;
+  font-size: 11px;
+  padding-block: 3px;
+}
+.reception-current-message .reception-interaction > .primary {
+  display: flex;
+  margin: 12px auto 0;
+}
+@media (max-width: 700px) {
+  .public-reception-header {
+    padding: 16px 20px;
+  }
+  .public-reception-header .brand img {
+    width: 125px;
+  }
+  .public-reception > main {
+    padding: 12px 18px 25px;
+  }
+  .reception-stage-tools {
+    margin-bottom: 16px;
+    gap: 18px;
+  }
+  .reception-stage-tools .text-link {
+    font-size: 11px;
+  }
+  .reception-live-bubble {
+    padding: 17px 18px;
+    border-radius: 17px;
+  }
+  .reception-current-message > p,
+  .reception-welcome {
+    font-size: 15px;
+  }
+  .reception-stage .reception-character {
+    width: min(340px, 100%);
+    margin-top: 10px;
+  }
+  .reception-stage-speech {
+    top: calc(100% + 10px);
+    right: 0;
+    max-width: 170px;
+  }
+  .reception-stage-speech .reply-speech > p {
+    display: none;
+  }
+  .reception-stage-speech .reply-speech .notice {
+    display: block;
+  }
+  .reception-current-message .reception-options {
+    gap: 7px;
+  }
+  .reception-options .secondary {
+    font-size: 11px;
+    min-height: 35px;
+    padding: 7px 10px;
+  }
+  .reception-presence {
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+  .reception-composer textarea {
+    padding: 13px 87px 12px 13px;
+    font-size: 12px;
+    min-height: 64px;
+  }
+  .reception-composer > .between {
+    top: 12px;
+    right: 9px;
+  }
+  .reception-composer > .between .primary {
+    font-size: 12px;
+    min-width: 62px;
+    min-height: 36px;
+  }
+  .reception-composer > .check-label {
+    font-size: 10px;
+    justify-content: flex-start;
+  }
+  .reception-composer:has(.between > .quiet) textarea {
+    padding-right: 145px;
+  }
+  .reception-composer > .between > .quiet {
+    font-size: 11px;
+    padding: 4px;
+  }
+  .reception-history {
+    padding: 22px 19px;
+  }
+}
+
+/* The scene stays the same size; replies float beside it instead of moving it. */
+.reception-greeting-slot {
+  height: 120px;
+  flex: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reception-greeting-slot .reception-welcome {
+  font-size: 16px;
+  line-height: 1.7;
+}
+.reception-reply-toggle {
+  display: block;
+  margin: 3px auto -5px;
+  padding: 1px 8px;
+  min-height: 25px;
+  font-size: 11px;
+}
+.reception-workspace {
+  position: absolute;
+  right: 0;
+  top: 155px;
+  z-index: 4;
+  width: min(370px, calc(50% - 230px));
+  max-height: 440px;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #dce4f3;
+  border-radius: 18px;
+  box-shadow:
+    0 16px 55px #25334b17,
+    0 3px 12px #25334b08;
+  animation: reception-reply-appear 180ms ease-out;
+}
+.reception-workspace[hidden] {
+  display: none;
+}
+.reception-workspace-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+.reception-workspace-heading h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #74819a;
+}
+.reception-workspace-heading > button {
+  min-height: 28px;
+  padding: 0 6px;
+  font-size: 22px;
+  line-height: 1;
+  color: #74819a;
+}
+.reception-workspace > .reception-stage-speech {
+  margin: 0 0 10px;
+  flex-shrink: 0;
+}
+.reception-workspace .reply-speech.is-compact {
+  justify-content: flex-start;
+}
+.reception-current-exchange {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  padding-right: 5px;
+}
+.reception-current-exchange:focus-visible {
+  outline: 2px solid #c6d5ff;
+  outline-offset: 3px;
+}
+.reception-workspace .reception-current-message > .reception-markdown {
+  font-size: 14px;
+  line-height: 1.9;
+  text-align: left;
+}
+.reception-workspace .reception-current-message .reception-options,
+.reception-workspace .reception-current-message .reception-alternatives {
+  justify-content: flex-start;
+}
+.reception-workspace
+  .reception-current-message
+  .reception-interaction
+  > .primary {
+  margin-left: 0;
+}
+.reception-workspace .reception-current-message .reception-interaction {
+  background: transparent;
+}
+@keyframes reception-reply-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 1100px) {
+  .reception-workspace {
+    position: fixed;
+    inset: auto 16px 16px auto;
+    width: min(440px, calc(100vw - 32px));
+    max-height: min(440px, 48svh);
+    z-index: 8;
+  }
+}
+@media (max-width: 700px) {
+  .reception-greeting-slot {
+    height: 120px;
+  }
+  .reception-greeting-slot .reception-welcome {
+    font-size: 14px;
+  }
+  .reception-workspace {
+    max-height: min(400px, 42svh);
+    padding: 14px 16px 16px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    border-radius: 18px;
+  }
+  .reception-workspace .reception-current-message > .reception-markdown {
+    font-size: 13px;
+  }
+  .reception-stage-speech {
+    position: static;
+    max-width: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reception-workspace {
+    animation: none;
+  }
+}
+
+.reception-case-sources {
+  margin: 0.7rem 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.reception-case-sources ul {
+  margin: 0.35rem 0;
+  padding-left: 1.2rem;
+}
+.reception-case-sources a {
+  overflow-wrap: anywhere;
+}
+
+/* A conversation-level voice switch; never attached to individual messages. */
+.reception-voice-control {
+  position: relative;
+  flex-shrink: 0;
+}
+.reception-stage-tools .reception-voice-toggle {
+  display: inline-flex;
+  gap: 7px;
+  white-space: nowrap;
+}
+.reception-switch-track {
+  display: inline-flex;
+  align-items: center;
+  width: 27px;
+  height: 16px;
+  padding: 2px;
+  border-radius: 10px;
+  background: #d8deea;
+}
+.reception-switch-track i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px #17203220;
+}
+.reception-voice-toggle[aria-checked="true"] .reception-switch-track {
+  background: var(--blue);
+}
+.reception-voice-toggle[aria-checked="true"] .reception-switch-track i {
+  transform: translateX(11px);
+}
+.reception-voice-notice {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: min(280px, 75vw);
+  padding: 12px 15px;
+  margin: 3px 0 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 24px #25334b14;
+  font-size: 12px;
+  line-height: 1.8;
+  z-index: 10;
+}
+@media (max-width: 700px) {
+  .reception-stage-tools {
+    flex-wrap: wrap;
+    gap: 14px;
+    row-gap: 0;
+  }
+}
+
+.reception-voice-source {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: max-content;
+  max-width: min(300px, 80vw);
+  color: var(--muted);
+  background: #fff;
+  font-size: 10px;
+  line-height: 1.7;
+  text-align: right;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Comparison and exercises share the existing reply surface and send flow. */
+.reception-shortcuts {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 9px 0 0;
+}
+.reception-shortcuts button {
+  min-height: 29px;
+  padding: 4px 12px;
+  font-size: 11px;
+  border-radius: 18px;
+  color: #63718b;
+}
+.reception-experiment {
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.reception-experiment > p {
+  white-space: pre-wrap;
+  margin: 10px 0;
+}
+.reception-experiment h4 {
+  margin: 16px 0 7px;
+}
+.reception-recommendation {
+  padding: 12px 14px;
+  background: #f0f4ff;
+  border-radius: 10px;
+}
+.reception-recommendation strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+.reception-recommendation p {
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+}
+.reception-comparison-basis {
+  margin: 12px 0;
+  font-size: 12px;
+  color: #63718b;
+}
+.reception-comparison-basis summary {
+  cursor: pointer;
+}
+.reception-experiment ul {
+  padding-left: 18px;
+  margin: 7px 0;
+}
+.reception-directions {
+  display: grid;
+  gap: 12px;
+}
+.reception-direction {
+  border: 1px solid var(--line);
+  padding: 13px 14px;
+  border-radius: 12px;
+}
+.reception-direction[data-recommended="true"] {
+  border-color: #c6d5ff;
+}
+.reception-direction > h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.reception-direction > p {
+  margin: 7px 0;
+  white-space: pre-wrap;
+}
+.reception-direction > button {
+  margin-top: 12px;
+  width: 100%;
+}
+.reception-direction dl > div {
+  padding: 9px 0;
+}
+.reception-direction dl dd {
+  font-size: 12px;
+}
+.reception-experiment-badge {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 2px 7px;
+  background: #edf2ff;
+  color: #4f64a4;
+  font-size: 10px;
+  font-weight: 400;
+}
+.reception-direction h4 .reception-experiment-badge {
+  margin-left: 7px;
+}
+.reception-sample-form label {
+  margin: 14px 0 6px;
+  font-size: 12px;
+}
+.reception-sample-form input,
+.reception-sample-form textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #d0daeb;
+  border-radius: 7px;
+  color: #25334b;
+  background: #fff;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.reception-sample-form textarea {
+  resize: vertical;
+  min-height: 96px;
+  max-height: 240px;
+}
+.reception-sample-form > .primary {
+  width: 100%;
+  margin-top: 8px;
+}
+.reception-sample-mode {
+  padding: 10px 12px;
+  background: #f5f7fc;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.reception-sample-output {
+  padding: 12px 14px;
+  background: #f8faff;
+  border: 1px solid #e3e8f0;
+  border-radius: 9px;
+  white-space: pre-wrap;
+}
+.reception-sample-result blockquote {
+  margin: 10px 0;
+  padding: 9px 12px;
+  border-left: 2px solid #c6d5ff;
+  background: #f8faff;
+}
+.reception-sample-result blockquote p {
+  margin: 0 0 5px;
+  white-space: pre-wrap;
+}
+.reception-sample-result cite {
+  font-style: normal;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* Keep the composer in the first viewport, including short desktop windows. */
+.reception-stage .reception-character {
+  width: min(440px, max(150px, calc(100svh - 490px)), 100%);
+}
+@media (max-height: 800px) {
+  .public-reception-header { padding-block: 12px; }
+  .public-reception > main { padding-block: 10px 18px; }
+  .reception-stage-tools { margin-bottom: 4px; }
+  .reception-greeting-slot { height: 88px; }
+  .reception-live-bubble { padding: 12px 20px; }
+  .reception-workspace { top: 108px; max-height: min(400px, calc(100svh - 290px)); }
+}
+@media (max-width: 1100px) {
+  .reception-workspace {
+    top: max(260px, env(safe-area-inset-top));
+    bottom: auto;
+    max-height: min(360px, max(120px, calc(100svh - 530px)));
+  }
+}
+
+/* Saved conversation achievements: a growing result list, not a plan. */
+.reception-progress {
+  position: absolute;
+  top: calc(var(--reception-tools-bottom, 36px) + 24px);
+  left: 0;
+  width: min(248px, calc(50% - 218px));
+  max-height: min(520px, max(140px, calc(var(--reception-composer-top, 650px) - var(--reception-tools-bottom, 36px) - 44px)));
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  padding: 15px 15px 10px;
+  border: 1px solid #e3e9f2;
+  border-radius: 14px;
+  background: #fff;
+  z-index: 1;
+}
+.reception-achievements-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.reception-achievements-heading h2 { margin: 0; font-size: 14px; line-height: 1.6; font-weight: 600; color: #33445f; }
+.reception-achievements-heading > span { color: #8090a7; font-size: 11px; }
+.reception-achievements-intro,
+.reception-achievements-empty { margin: 8px 0 10px; color: #7b879b; font-size: 11px; line-height: 1.8; }
+.reception-achievements-list { list-style: none; padding: 0; margin: 3px 0 0; }
+.reception-achievements-list > li { min-width: 0; border-top: 1px solid #edf0f6; }
+.reception-achievement {
+  display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 13px 2px;
+  border: 0; background: transparent; text-align: left; border-radius: 7px; color: #425371;
+}
+.reception-achievement:hover { background: #f7f9fd; }
+.reception-achievement:focus-visible { outline: 2px solid #9dbbfb; outline-offset: 2px; }
+.reception-achievement-mark { flex: none; width: 5px; height: 5px; border-radius: 50%; background: #8ba4dc; margin-top: 8px; }
+.reception-achievement-copy { display: grid; gap: 6px; min-width: 0; }
+.reception-achievement-copy > strong { font-size: 12px; font-weight: 500; line-height: 1.7; overflow-wrap: anywhere; }
+.reception-achievement-summary {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
+  font-size: 11px; line-height: 1.8; color: #7a879b; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.reception-achievement-link { font-size: 10px; line-height: 1.6; color: #6b82b2; }
+.reception-progress-detail { font-size: 13px; overflow-wrap: anywhere; }
+.reception-achievement-conclusion { white-space: pre-wrap; }
+.reception-progress-evidence { padding: 12px; margin: 10px 0; background: #f7f9fd; border-radius: 10px; overflow-wrap: anywhere; }
+.reception-progress-evidence > small { color: #718098; }
+.reception-progress-evidence > p { white-space: pre-wrap; line-height: 1.8; }
+.reception-workspace {
+  top: var(--reception-reply-top, 146px);
+  max-height: min(440px, max(80px, calc(var(--reception-composer-top, 650px) - var(--reception-reply-top, 146px) - 8px)));
+}
+.reception-input-area { position: relative; z-index: 5; }
+@media (max-width: 1100px) {
+  .reception-stage { display: flex; flex-direction: column; }
+  .reception-stage-tools { order: 0; }
+  .reception-face { order: 1; }
+  .reception-input-area { order: 2; }
+  .reception-progress { position: static; order: 3; width: min(720px, 100%); max-height: none; overflow: visible; margin: 22px auto 0; }
+  .reception-workspace {
+    position: absolute; inset: auto 0 auto auto; z-index: 4;
+    top: var(--reception-reply-top, 280px); width: min(440px, 100%);
+    max-height: min(360px, max(80px, calc(var(--reception-composer-top, 650px) - var(--reception-reply-top, 280px) - 8px)));
+  }
+}
+@media (max-width: 700px) {
+  .reception-stage .reception-character { width: min(340px, max(150px, calc(100svh - 490px)), 100%); }
+}
+.reception-achievement-kind { color: #7c8aa1; font-size: 10px; line-height: 1.5; }
+.reception-progress dialog { overflow-wrap: anywhere; }
+
+/* Parsed message bodies share typography in replies, records and evidence. */
+.reception-markdown {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.85;
+}
+.reception-markdown > :first-child { margin-top: 0; }
+.reception-markdown > :last-child { margin-bottom: 0; }
+.reception-markdown p { margin: 0 0 10px; }
+.reception-markdown h3,
+.reception-markdown h4,
+.reception-markdown h5 { margin: 16px 0 8px; font-size: 1em; line-height: 1.6; font-weight: 600; }
+.reception-markdown h3 { font-size: 1.1em; }
+.reception-markdown ul,
+.reception-markdown ol { margin: 8px 0 12px; padding-left: 24px; }
+.reception-markdown li { margin: 4px 0; }
+.reception-markdown li > input[type="checkbox"] { width: auto; margin-right: 7px; }
+.reception-markdown blockquote { margin: 12px 0; padding: 8px 12px; border-left: 3px solid #c6d5ff; background: #f5f7fc; }
+.reception-markdown blockquote > :last-child { margin-bottom: 0; }
+.reception-markdown code { padding: 2px 4px; border-radius: 4px; background: #eaf0f9; font-family: ui-monospace, monospace; font-size: .9em; }
+.reception-markdown pre { max-width: 100%; overflow: auto; padding: 12px; border-radius: 8px; background: #edf2fa; white-space: pre; overflow-wrap: normal; }
+.reception-markdown pre code { padding: 0; background: none; font-size: 12px; }
+.reception-markdown a { text-decoration: underline; text-underline-offset: 3px; }
+.reception-markdown hr { margin: 15px 0; border: 0; border-top: 1px solid #dce4ef; }
+.reception-markdown-table { max-width: 100%; overflow: auto; margin: 12px 0; scrollbar-width: thin; }
+.reception-markdown-table table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 12px; }
+.reception-markdown-table th,
+.reception-markdown-table td { padding: 8px 10px; border: 1px solid #dce4ef; vertical-align: top; max-width: 320px; white-space: normal; overflow-wrap: anywhere; }
+.reception-markdown-table th { background: #edf2fa; font-weight: 600; }
+.reception-markdown-table:focus-visible { outline: 2px solid #9dbbfb; outline-offset: 2px; }
+.reception-draft-notice { margin: 0 0 10px; font-size: 11px; line-height: 1.7; color: #7a879b; }
+.reception-current-message + .reception-current-message,
+.reception-current-message + [data-testid="reception-streaming-draft"] { margin-top: 16px; padding-top: 16px; border-top: 1px solid #e3e9f2; }
+
+/* Reception refresh: quiet chrome, a stable portrait and a continuous exchange. */
+.reception-stage,
+.reception-privacy-dialog {
+  --reception-ink: #242d3b;
+  --reception-muted: #7b8798;
+  --reception-line: #e8edf2;
+  --reception-surface: #f5f7fa;
+}
+.public-reception-header { max-width: 1440px; padding: 22px 40px; }
+.public-reception-header .brand img { width: 170px; }
+.public-reception > main { max-width: 1440px; padding: 22px 40px 28px; }
+.reception-stage { max-width: 1280px; color: var(--reception-ink); }
+.reception-stage-tools { gap: 20px; margin-bottom: 10px; }
+.reception-stage-tools > .text-link,
+.reception-stage-tools .reception-voice-toggle { color: #64728a; font-weight: 400; }
+.reception-stage-tools > .text-link:hover { color: #3459c6; }
+.reception-greeting-slot { height: 136px; }
+.reception-bubble-anchor { position: relative; width: fit-content; max-width: min(340px, calc(100% - 96px)); }
+.reception-live-bubble { max-width: 100%; padding: 14px 22px; border-color: #dfe5ee; border-radius: 24px; }
+.reception-live-bubble::after { width: 13px; height: 13px; bottom: -7px; left: calc(50% - 7px); border-color: #dfe5ee; }
+.reception-greeting-slot .reception-welcome,
+.reception-greeting-slot .reception-preparing { display: block; font-size: 16px; font-weight: 500; line-height: 1.65; color: #273449; padding: 0; margin: 0; }
+.reception-reply-toggle { position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; width: 36px; margin: 0; padding: 4px 0; min-height: 40px; border: 1px solid #dfe6ef; border-radius: 9px; background: #f5f7fa; color: #627591; font-size: 10px; font-weight: 500; line-height: 1.5; white-space: nowrap; cursor: pointer; }
+.reception-reply-toggle:hover { background: #eaf0f8; border-color: #c7d4e5; color: #304c73; }
+.reception-reply-toggle:active { background: #dfe8f4; }
+.reception-reply-toggle:focus-visible { outline: 2px solid #91a6d3; outline-offset: 3px; }
+.reception-stage .reception-character { width: min(420px, max(200px, calc(100svh - 400px)), 100%); margin-top: 24px; }
+.reception-presence { margin-top: 0; margin-bottom: 18px; color: #7e8a9b; font-size: 11px; }
+.reception-progress { width: min(248px, calc(50% - 230px)); border-color: var(--reception-line); border-radius: 18px; padding: 18px 18px 12px; max-height: min(620px, max(140px, calc(var(--reception-composer-top, 700px) - var(--reception-tools-bottom, 36px) - 44px))); }
+.reception-achievements-heading h2 { font-size: 15px; color: #35415a; }
+.reception-achievements-intro { font-size: 11px; color: #8a95a5; }
+.reception-achievement { padding: 16px 0; }
+.reception-achievement-copy > strong { font-size: 13px; }
+.reception-achievement-summary { font-size: 12px; }
+.reception-achievement-link { font-size: 11px; }
+.reception-workspace { width: min(400px, calc(50% - 220px)); padding: 20px; border-radius: 18px; border-color: var(--reception-line); box-shadow: none; max-height: min(620px, max(80px, calc(var(--reception-composer-top, 700px) - var(--reception-reply-top, 100px) - 16px))); }
+.reception-workspace-heading { margin-bottom: 20px; }
+.reception-workspace-heading h2 { font-size: 15px; font-weight: 600; color: #35415a; }
+.reception-current-exchange { padding-right: 5px; }
+.reception-current-message,
+.reception-current-message + .reception-current-message { position: relative; margin: 0; padding: 0 0 20px 20px; border: 0; }
+.reception-current-message::before { content: ''; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; background: #758fd2; border-radius: 50%; }
+.reception-current-message::after { content: ''; position: absolute; left: 2.5px; top: 20px; bottom: 6px; width: 1px; background: #e5eaf2; }
+.reception-current-message:last-child::after { display: none; }
+.reception-current-message:last-child { padding-bottom: 2px; }
+.reception-delivery-label { display: block; margin-bottom: 7px; color: #7d8ba2; font-size: 10px; line-height: 1.6; }
+.reception-current-message > .reception-markdown { font-size: 14px; line-height: 1.85; }
+.reception-workspace .reception-current-message .reception-interaction { margin-top: 10px; padding: 12px; border-color: #e4eaf2; border-radius: 12px; }
+.reception-current-message + [data-testid="reception-streaming-draft"],
+[data-testid="reception-streaming-draft"] { position: relative; margin: 0; padding: 0 0 0 20px; border: 0; }
+[data-testid="reception-streaming-draft"]::before { content: ''; position: absolute; left: 0; top: 6px; width: 6px; height: 6px; border: 1px solid #758fd2; border-radius: 50%; background: white; }
+.reception-draft-notice { font-size: 10px; color: #7d8ba2; line-height: 1.7; margin: 0 0 8px; }
+[data-testid="reception-streaming-draft"] > .reception-markdown { padding: 10px 12px; border-radius: 10px; background: #f6f8fb; font-size: 14px; }
+.reception-input-area { width: min(760px, 100%); }
+.reception-composer { padding: 0; border: 0; background: none; }
+.reception-compose-box { position: relative; padding: 15px 58px 15px 20px; min-height: 58px; border: 1px solid #e6eaf0; border-radius: 28px; background: #f6f7f9; transition: border-color 160ms ease, background 160ms ease; }
+.reception-compose-box:focus-within { border-color: #c5cedd; background: #f8f9fb; }
+.reception-compose-box > label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.reception-composer .reception-compose-box textarea,
+.reception-composer:has(.between > .quiet) .reception-compose-box textarea { display: block; width: 100%; height: 26px; min-height: 26px; max-height: 140px; margin: 0; padding: 0; border: 0; border-radius: 0; outline: none; resize: none; background: transparent; color: #283449; font-size: 14px; line-height: 26px; overflow-y: auto; box-shadow: none; }
+.reception-compose-box textarea::placeholder { color: #929baa; }
+.reception-compose-box > .between { position: absolute; right: 10px; bottom: 10px; top: auto; display: flex; align-items: center; gap: 7px; }
+.reception-compose-box:has(.reception-input-voice) { padding-right: 100px; }
+.reception-compose-box .reception-send { display: grid; place-items: center; width: 36px; height: 36px; min-width: 36px; min-height: 36px; padding: 0; margin: 0; border: 0; border-radius: 50%; color: white; background: #263449; }
+.reception-compose-box .reception-send:hover:not(:disabled) { background: #152339; }
+.reception-compose-box .reception-send:disabled { opacity: 1; background: #d7dde6; color: white; cursor: default; }
+.reception-compose-box .reception-send:focus-visible { outline: 2px solid #91a6d3; outline-offset: 3px; }
+.reception-compose-box .reception-input-voice { display: grid; place-items: center; width: 30px; height: 36px; padding: 0; margin: 0; border: 0; color: #6e7d92; }
+.reception-composer-help { margin: 8px 0 0; text-align: center; color: #9aa3b1; font-size: 10px; line-height: 1.7; }
+.reception-shortcuts { margin-top: 12px; gap: 12px; }
+.reception-shortcuts button { border-color: #e7ebf2; color: #8792a4; font-size: 11px; padding: 5px 13px; min-height: 30px; }
+.reception-more-menu { position: relative; font-size: 12px; }
+.reception-more-menu > summary { display: flex; align-items: center; gap: 5px; min-height: 32px; list-style: none; cursor: pointer; color: #64728a; }
+.reception-more-menu > summary::-webkit-details-marker { display: none; }
+.reception-more-menu > summary:focus-visible { outline: 2px solid #a2b6df; outline-offset: 3px; border-radius: 4px; }
+.reception-more-content { position: absolute; right: 0; top: calc(100% + 7px); width: 190px; padding: 7px; border: 1px solid #e5eaf1; border-radius: 12px; background: white; box-shadow: 0 12px 32px #26344912; z-index: 20; }
+.reception-more-content .text-link { display: block; width: 100%; text-align: left; padding: 8px 10px; border: 0; border-radius: 7px; color: #53637b; }
+.reception-more-content .text-link:hover { background: #f5f7fa; }
+dialog.reception-privacy-dialog { position: fixed; width: min(460px, calc(100vw - 32px)); max-width: 460px; padding: 28px; border: 1px solid #e1e6ee; border-radius: 24px; color: #242d3b; box-shadow: 0 20px 65px #1d2e4717; }
+.reception-privacy-dialog::backdrop { background: #24344926; backdrop-filter: blur(4px); }
+.reception-privacy-dialog > h2 { margin: 64px 0 14px; font-size: 22px; line-height: 1.5; letter-spacing: -.015em; font-weight: 600; }
+.reception-privacy-icon { position: absolute; top: 28px; left: 28px; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; background: #f1f4f8; color: #203656; }
+.reception-privacy-dialog .reception-privacy-copy { margin: 0; font-size: 14px; line-height: 1.9; color: #536075; }
+.reception-privacy-dialog .reception-privacy-note { margin: 14px 0 26px; font-size: 12px; line-height: 1.8; color: #8e98a9; }
+.reception-privacy-dialog .dialog-actions { display: grid; grid-template-columns: 1fr 1.45fr; gap: 12px; margin: 0; }
+.reception-privacy-dialog .dialog-actions button { min-height: 44px; padding: 10px 14px; border: 0; border-radius: 12px; background: #f0f3f7; color: #34445c; font-size: 14px; }
+.reception-privacy-dialog .dialog-actions .primary { background: #1d365e; color: white; font-weight: 500; }
+.reception-privacy-dialog .dialog-actions .primary:hover { background: #142b4c; }
+.reception-privacy-dialog .modal-close { top: 18px; right: 18px; width: 30px; height: 30px; min-height: 30px; padding: 0; border: 0; border-radius: 50%; font-size: 25px; color: #8a95a6; }
+@media (max-height: 800px) {
+  .public-reception-header { padding-block: 14px; }
+  .public-reception > main { padding-block: 12px 20px; }
+  .reception-greeting-slot { height: 96px; }
+  .reception-stage .reception-character { width: min(380px, max(200px, calc(100svh - 440px)), 100%); margin-top: 16px; }
+  .reception-live-bubble { padding: 11px 18px; }
+  .reception-greeting-slot .reception-welcome,
+  .reception-greeting-slot .reception-preparing { font-size: 15px; }
+}
+@media (max-width: 1100px) {
+  .reception-progress { width: min(760px, 100%); margin-top: 24px; max-height: none; }
+  .reception-workspace { width: min(420px, 100%); top: var(--reception-reply-top, 280px); max-height: min(430px, max(80px, calc(var(--reception-composer-top, 700px) - var(--reception-reply-top, 280px) - 16px))); }
+}
+@media (max-width: 700px) {
+  .public-reception-header { padding: 16px 20px; }
+  .public-reception-header .brand img { width: 130px; }
+  .public-reception > main { padding: 12px 18px 24px; }
+  .reception-stage-tools { gap: 12px; row-gap: 0; margin-bottom: 6px; }
+  .reception-more-menu { font-size: 11px; }
+  .reception-greeting-slot { height: 112px; }
+  .reception-bubble-anchor { max-width: min(340px, calc(100% - 80px)); }
+  .reception-live-bubble { padding: 10px 14px; }
+  .reception-reply-toggle { left: calc(100% + 8px); width: 32px; }
+  .reception-greeting-slot .reception-welcome,
+  .reception-greeting-slot .reception-preparing { font-size: 14px; }
+  .reception-stage .reception-character { width: min(320px, max(180px, calc(100svh - 470px)), 100%); margin-top: 24px; }
+  .reception-workspace { padding: 16px; }
+  .reception-workspace-heading { margin-bottom: 14px; }
+  .reception-current-message > .reception-markdown { font-size: 13px; }
+  .reception-compose-box { padding: 14px 54px 14px 17px; min-height: 56px; }
+  .reception-compose-box .reception-send { width: 34px; height: 34px; min-width: 34px; min-height: 34px; }
+  .reception-compose-box > .between { right: 9px; bottom: 10px; }
+  .reception-privacy-dialog > h2 { font-size: 20px; }
+  .reception-privacy-dialog .dialog-actions { gap: 9px; grid-template-columns: 1fr 1.3fr; }
+}
+@media (prefers-reduced-motion: reduce) { .reception-compose-box { transition: none; } }
+.reception-past-artifact { margin-top: 10px; border: 1px solid #e8edf2; border-radius: 10px; }
+.reception-past-artifact > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; list-style: none; padding: 10px 12px; color: #697b96; cursor: pointer; font-size: 12px; line-height: 1.7; }
+.reception-past-artifact > summary::-webkit-details-marker { display: none; }
+.reception-past-artifact > summary > span { min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.reception-past-artifact > summary > svg { flex: none; }
+.reception-past-artifact[open] > summary > svg { transform: rotate(90deg); }
+.reception-past-artifact > summary:focus-visible { outline: 2px solid #a2b6df; outline-offset: 2px; border-radius: 10px; }
+.reception-workspace .reception-past-artifact .reception-interaction { margin: 0; border: 0; border-top: 1px solid #edf0f5; border-radius: 0; }
+.reception-typing-text { position: relative; display: block; }
+.reception-typing-reserve { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; overflow-wrap: anywhere; visibility: hidden; }
+.reception-typing-visible { position: absolute; inset: 0; overflow-y: auto; overflow-wrap: anywhere; overscroll-behavior: contain; scrollbar-width: none; }
+.reception-typing-visible::-webkit-scrollbar { display: none; }
+.reception-typing-caret { display: inline-block; width: 2px; height: .95em; margin-left: 3px; vertical-align: -.08em; border-radius: 1px; background: #8092ad; animation: reception-caret-pulse 800ms ease-in-out infinite; }
+@keyframes reception-caret-pulse { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .reception-typing-caret { animation: none; } }

@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: poc
+      POSTGRES_PASSWORD: poc-local-only
+      POSTGRES_DB: ally_poc
+    ports: ["127.0.0.1:55432:5432"]
+    volumes: ["poc-db:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U poc -d ally_poc"]
+      interval: 2s
+      retries: 20
+volumes:
+  poc-db:

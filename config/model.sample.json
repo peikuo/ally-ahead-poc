@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "approvedModels": [
+    {
+      "provider": "your-provider",
+      "modelId": "REPLACE_MODEL_ID",
+      "api": "openai-completions",
+      "baseUrl": "https://REPLACE_PROVIDER_HOST/v1",
+      "contextWindow": 128000,
+      "maxOutputTokens": 8192,
+      "reasoning": false,
+      "cost": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      }
+    }
+  ],
+  "selected": {
+    "provider": "your-provider",
+    "modelId": "REPLACE_MODEL_ID",
+    "api": "openai-completions"
+  }
+}
