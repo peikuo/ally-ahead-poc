@@ -5,7 +5,25 @@ An AI reception POC for the PayPal AI Hackathon. Ally Ahead helps a business tur
 - [Try the POC](https://ally-poc.aixagent.cloud/)
 - [Watch the demo video](https://youtu.be/s--7eNOinEk)
 
-The demo follows a fictional business from its first conversation through requirements clarification to a **USD 500 PayPal Sandbox payment**, simulated publication and a user-requested full refund. Sandbox payments use test funds. Payment does not select an expert, create a contract or start work.
+The video follows a fictional business from its first conversation through requirements clarification, a **USD 500 PayPal Sandbox payment**, a verified receipt and simulated publication. A completed refund is not shown in the video. The app supports a separate, user-requested full test refund. Sandbox payments use test funds, and publication is simulated.
+
+## Test the hosted demo
+
+You can use [the hosted POC](https://ally-poc.aixagent.cloud/) without an Ally Ahead account or your own merchant API credentials. To approve the test payment, use a PayPal Sandbox **Personal** account as the buyer.
+
+### Get a Sandbox buyer account
+
+1. Sign in to the [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/) and open **Testing Tools → Sandbox Accounts**.
+2. Use your existing **Personal** Sandbox account or choose **Create account**, select **Personal** and choose a country or region. Make sure the buyer has enough Sandbox funds for the USD 500.00 test payment.
+3. Open the account's **View/Edit account** menu and check **Login Info** for the Sandbox email and password. If the password is unavailable, set a new one there. Use these credentials in the Sandbox checkout window. [PayPal Sandbox account guide](https://developer.paypal.com/sandbox-testing/accounts)
+
+### Walk through payment and refund
+
+1. Open the hosted demo, switch to English if needed, and select **Start**. Describe a fictional business need, such as a repair shop that wants staff to log jobs and mark them open or closed.
+2. Select **Generate document**. Review the report and, if needed, enter a change and select **Revise the document**. Review the updated version before selecting **Confirm document accuracy**. If the Agent pauses, close the document dialog if it is open, select **Continue working** in reception, and wait for the report.
+3. Select **Continue to simulated publication** and **Agree to terms and continue to payment**. Open PayPal, sign in with your Sandbox buyer and approve **USD 500.00** in test funds.
+4. Return to Ally Ahead and verify the payment receipt and simulated publication status. If the result is unclear, use **Check payment / refund status** before trying again. Keep the same browser session so you can reopen the receipt under **Test payment status**.
+5. Select **Request a test full refund**, then **Confirm test full refund**. Verify that the full refund is shown and simulated publication is withdrawn. Use the status check again if the refund is still pending.
 
 ## Preview
 
