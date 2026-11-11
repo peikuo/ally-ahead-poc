@@ -26,6 +26,7 @@ function fixture() {
     loseRefund = false,
     pending = false;
   const calls = { create: 0, capture: 0, refund: 0 };
+  let clockOffset = 0;
   const refundKeys: string[] = [];
   const tx = {} as Transaction;
   const access: ReceptionPaymentAccess<Transaction> = async (fn) => {
@@ -141,6 +142,7 @@ function fixture() {
     docs,
     { clientId: "controlled-id", secret: "controlled-secret" },
     api,
+    () => Date.now() + clockOffset,
   );
   const input = {
     documentMessageId: doc,
@@ -172,6 +174,9 @@ function fixture() {
     create,
     calls,
     refundKeys,
+    advanceHours(hours: number) {
+      clockOffset += hours * 3600000;
+    },
     approve() {
       approved = true;
     },
@@ -189,6 +194,71 @@ function fixture() {
     docs,
   };
 }
+test("stale missing unapproved order closes once and only explicit replacement permits a new order", async () => {
+  const f = fixture();
+  const old = await f.create();
+  assert.equal((await f.service.read(f.access, old.paymentId)).state, "awaiting_buyer");
+  let lookups = 0;
+  f.api.order = async () => {
+    lookups++;
+    throw new SandboxPaymentError("PAYPAL_ORDER_NOT_FOUND", "unknown");
+  };
+  const replacement = { ...f.input, requestKey: randomUUID(), replacePaymentId: old.paymentId };
+  assert.equal((await f.service.read(f.access, old.paymentId)).state, "unknown");
+  await assert.rejects(f.service.prepare(f.access, replacement));
+
+  f.advanceHours(8);
+  const closed = await f.service.read(f.access, old.paymentId);
+  assert.equal(closed.replacementAvailable, true);
+  assert.equal(closed.retryable, false);
+  assert.equal(closed.orderId, "ORDER1");
+  assert.deepEqual(await f.service.read(f.access, old.paymentId), closed);
+  assert.equal(lookups, 2);
+  await assert.rejects(f.service.capture(f.access, old.paymentId, "ORDER1"));
+  await assert.rejects(f.service.prepare(f.foreign, replacement));
+  await assert.rejects(f.service.prepare(f.access, { ...replacement, confirmedMarkdown: "# Changed" }));
+  assert.equal((await f.prepare()).paymentId, old.paymentId);
+
+  const next = await f.service.prepare(f.access, replacement);
+  assert.notEqual(next.paymentId, old.paymentId);
+  assert.equal(next.state, "awaiting_payment_consent");
+  assert.equal(next.orderId, null);
+  assert.equal((await f.service.prepare(f.access, replacement)).paymentId, next.paymentId);
+  await assert.rejects(f.service.prepare(f.access, { ...replacement, requestKey: randomUUID() }));
+  assert.deepEqual(f.calls, { create: 1, capture: 0, refund: 0 });
+
+  f.api.create = async () => {
+    f.calls.create++;
+    return { id: "ORDER2", status: "PAYER_ACTION_REQUIRED" };
+  };
+  const created = await f.service.create(f.access, next.paymentId, {
+    termsVersion: PAYMENT_TERMS_VERSION, expectedRevision: next.revision,
+    confirmedSandboxPayment: true, requestKey: randomUUID(),
+  });
+  assert.equal(created.orderId, "ORDER2");
+  assert.equal((await f.service.read(f.access, old.paymentId)).orderId, "ORDER1");
+  assert.deepEqual(f.calls, { create: 2, capture: 0, refund: 0 });
+});
+
+test("a missing order after a capture attempt remains unknown and cannot be replaced", async () => {
+  const f = fixture();
+  const old = await f.create();
+  f.approve();
+  f.api.capture = async () => {
+    f.calls.capture++;
+    throw new SandboxPaymentError("PAYPAL_RESPONSE_UNKNOWN", "unknown");
+  };
+  assert.equal((await f.service.capture(f.access, old.paymentId, "ORDER1")).outcome, "unknown");
+  f.advanceHours(8);
+  f.api.order = async () => { throw new SandboxPaymentError("PAYPAL_ORDER_NOT_FOUND", "unknown"); };
+  const checked = await f.service.read(f.access, old.paymentId);
+  assert.equal(checked.state, "unknown");
+  assert.equal(checked.replacementAvailable, undefined);
+  await assert.rejects(f.service.prepare(f.access, {
+    ...f.input, requestKey: randomUUID(), replacePaymentId: old.paymentId,
+  }));
+  assert.deepEqual(f.calls, { create: 1, capture: 1, refund: 0 });
+});
 test("document consent creates no provider transaction, binds exact snapshot and request replay", async () => {
   const f = fixture(),
     p = await f.prepare();

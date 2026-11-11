@@ -16,6 +16,7 @@ export const ReceptionPaymentTerms = z.strictObject({
   noRealFees: z.literal(true),
 });
 export const PrepareReceptionPayment = z.strictObject({
+  replacePaymentId: id.optional(),
   documentMessageId: id,
   confirmedMarkdown: z.string().trim().min(1).max(40000),
   confirmedDocument: z.literal(true),
@@ -70,6 +71,7 @@ export const ReceptionPaymentView = z.strictObject({
   outcome: z.enum(["known", "unknown", "failed"]),
   retryable: z.boolean(),
   refundRecoveryAvailable: z.boolean(),
+  replacementAvailable: z.literal(true).optional(),
 });
 
 export const ReceptionCurrentPayment = z.strictObject({

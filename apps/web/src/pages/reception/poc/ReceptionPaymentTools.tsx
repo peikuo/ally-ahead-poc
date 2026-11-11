@@ -26,6 +26,8 @@ export function ReceptionPaymentTools(props: ReceptionPaymentProps) {
     paid,
     refunded,
     recoveryAvailable,
+    canReplace,
+    replaceOrder,
     setOpen,
     stopCheckout,
     setRefundConfirmation,
@@ -69,7 +71,10 @@ export function ReceptionPaymentTools(props: ReceptionPaymentProps) {
       "付款或退款结果未知，请核对状态",
       "Payment or refund outcome unknown; check status",
     ),
-    failed: t(
+    failed: view?.replacementAvailable ? t(
+      "原测试订单已关闭，未发起扣款",
+      "The previous test order is closed. No capture was attempted.",
+    ) : t(
       "本次测试请求失败，请先核对状态",
       "The test request failed; verify status first",
     ),
@@ -195,6 +200,11 @@ export function ReceptionPaymentTools(props: ReceptionPaymentProps) {
                     {t("Sandbox 回执：", "Sandbox receipt: ")}
                     {view.captureId}
                   </p>
+                ) : null}
+                {canReplace ? (
+                  <button type="button" className="primary" disabled={busy} onClick={replaceOrder}>
+                    {t("重新发起测试付款", "Start a new test payment")}
+                  </button>
                 ) : null}
                 {!consent && safeToPay ? (
                   <button

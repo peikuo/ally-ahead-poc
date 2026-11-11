@@ -16,9 +16,23 @@ import type {
 } from "./reception-payments.ports.js";
 export const PAYMENT_TERMS_VERSION = RECEPTION_PAYMENT_TERMS_VERSION;
 const IDEMPOTENCY_WINDOW_MS = 6 * 3600000;
+// A missing order is ambiguous. Wait out the standard buyer redirect window
+// and require an untouched, previously unapproved order before closing it.
+const BUYER_REDIRECT_WINDOW_MS = 6 * 3600000;
+const CLOSED_ORDER = "PAYPAL_ORDER_CLOSED_WITHOUT_CAPTURE";
+function hasNoMoneyMovement(r: ReceptionPaymentRecord) {
+  return r.attemptedAt.capture === undefined &&
+    r.attemptedAt.refund === undefined &&
+    !r.captureId && !r.captureStatus && !r.refundId && !r.refundStatus;
+}
+function isClosedOrder(r: ReceptionPaymentRecord) {
+  return r.state === "failed" && r.failureCode === CLOSED_ORDER &&
+    !!r.orderId && !r.pending && hasNoMoneyMovement(r);
+}
 // A mutation can make several sequential provider calls, each bounded to 25 seconds.
 const ACTION_LEASE_MS = 180000;
 interface PrepareInput {
+  replacePaymentId?: string;
   documentMessageId: string;
   confirmedMarkdown: string;
   confirmedDocument: true;
@@ -84,7 +98,8 @@ export class ReceptionPaymentsService<Tx> {
             : ("not_published" as const),
       outcome: r.outcome,
       refundRecoveryAvailable: this.canRecoverRefund(r),
-      retryable: r.outcome !== "known" && !r.pending,
+      ...(isClosedOrder(r) ? { replacementAvailable: true as const } : {}),
+      retryable: r.outcome !== "known" && !r.pending && !isClosedOrder(r),
     };
   }
   private canRecoverRefund(r: ReceptionPaymentRecord) {
@@ -105,7 +120,7 @@ export class ReceptionPaymentsService<Tx> {
   private update(r: ReceptionPaymentRecord) {
     const prior = r.revision;
     r.revision++;
-    r.updatedAt = new Date(this.clock()).toISOString();
+    r.updatedAt = new Date(Math.max(this.clock(), Date.parse(r.updatedAt))).toISOString();
     return prior;
   }
   async prepare(access: ReceptionPaymentAccess<Tx>, input: PrepareInput) {
@@ -146,7 +161,11 @@ export class ReceptionPaymentsService<Tx> {
         return this.view(previous);
       }
       const active = await this.store.active(tx, sid);
-      if (active) {
+      if (input.replacePaymentId) {
+        if (!active || active.id !== input.replacePaymentId || !isClosedOrder(active) ||
+          active.documentMessageId !== source.messageId || active.documentHash !== hash)
+          throw new AppError("CONFLICT", 409);
+      } else if (active) {
         if (
           active.documentHash === hash &&
           active.documentMessageId === input.documentMessageId &&
@@ -157,7 +176,10 @@ export class ReceptionPaymentsService<Tx> {
         if (active.orderId || active.attemptedAt.create || active.pending)
           throw new AppError("CONFLICT", 409);
       }
-      const at = new Date(this.clock()).toISOString();
+      // The session is locked, so the new intent must sort after its predecessor.
+      const at = new Date(active
+        ? Math.max(this.clock(), Date.parse(active.createdAt) + 1)
+        : this.clock()).toISOString();
       const record: ReceptionPaymentRecord = {
         id: randomUUID(),
         sessionId: sid,
@@ -202,6 +224,10 @@ export class ReceptionPaymentsService<Tx> {
       const r = await this.get(tx, sid, id);
       if (r.termsVersion !== PAYMENT_TERMS_VERSION)
         throw new AppError("CONFLICT", 409);
+      if (isClosedOrder(r)) {
+        if (action === "status") return { record: r, done: true };
+        throw new AppError("CONFLICT", 409);
+      }
       if (action === "capture" && (!orderId || orderId !== r.orderId))
         throw new AppError("CONFLICT", 409);
       if (r.pending && r.pending.expiresAt > this.clock())
@@ -295,7 +321,7 @@ export class ReceptionPaymentsService<Tx> {
           refundStatus: result.refundStatus,
           state: result.state,
           outcome: result.outcome,
-          failureCode: null,
+          failureCode: result.failureCode,
         });
       }
       latest.pending = null;
@@ -312,6 +338,12 @@ export class ReceptionPaymentsService<Tx> {
       throw new SandboxPaymentError("PAYPAL_ORDER_MISMATCH", "unknown");
     const captured = exactCapture(order);
     r.orderStatus = order.status;
+    if (order.status === "VOIDED" && !captured && hasNoMoneyMovement(r)) {
+      r.state = "failed";
+      r.outcome = "failed";
+      r.failureCode = CLOSED_ORDER;
+      return;
+    }
     if (captured) {
       if (r.captureId && r.captureId !== captured.id)
         throw new SandboxPaymentError("PAYPAL_CAPTURE_MISMATCH", "unknown");
@@ -339,9 +371,10 @@ export class ReceptionPaymentsService<Tx> {
               ? "paid"
               : r.captureStatus === "REFUNDED"
                 ? "unknown"
-                : r.captureId
-                  ? "unknown"
-                  : "awaiting_buyer";
+                : !r.captureId &&
+                    ["CREATED", "PAYER_ACTION_REQUIRED", "APPROVED"].includes(order.status)
+                  ? "awaiting_buyer"
+                  : "unknown";
     r.outcome =
       r.state === "unknown"
         ? "unknown"
@@ -360,6 +393,7 @@ export class ReceptionPaymentsService<Tx> {
     const reserved = await this.reserve(access, id, action, input, orderId);
     if (reserved.done) return this.view(reserved.record);
     const result = structuredClone(reserved.record);
+    result.failureCode = null;
     try {
       if (action === "create") {
         const order = await api.create(result.createKey);
@@ -395,6 +429,17 @@ export class ReceptionPaymentsService<Tx> {
       }
       return await this.finish(access, reserved.record, result);
     } catch (error) {
+      const created = result.attemptedAt.create;
+      if (action === "status" &&
+        error instanceof SandboxPaymentError && error.code === "PAYPAL_ORDER_NOT_FOUND" &&
+        created !== undefined && this.clock() - created >= BUYER_REDIRECT_WINDOW_MS &&
+        ["CREATED", "PAYER_ACTION_REQUIRED"].includes(result.orderStatus ?? "") &&
+        hasNoMoneyMovement(result)) {
+        result.state = "failed";
+        result.outcome = "failed";
+        result.failureCode = CLOSED_ORDER;
+        return this.finish(access, reserved.record, result);
+      }
       return this.finish(access, reserved.record, result, error);
     }
   }

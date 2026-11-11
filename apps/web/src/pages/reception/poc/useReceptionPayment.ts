@@ -224,7 +224,7 @@ export function useReceptionPayment({
       /* safe notice above */
     }
   }
-  async function begin(messageId: string) {
+  async function begin(messageId: string, replacePaymentId?: string) {
     setOpen(true);
     setRefundConfirmation(false);
     stopCheckout();
@@ -246,7 +246,9 @@ export function useReceptionPayment({
     }
     try {
       const oldId = paymentIdFromUrl();
-      if (oldId) {
+      if (replacePaymentId && oldId !== replacePaymentId)
+        throw new RequestError(409, "CONFLICT");
+      if (oldId && !replacePaymentId) {
         const old = await request((signal) =>
           receptionPayments.read(oldId, signal),
         );
@@ -283,7 +285,8 @@ export function useReceptionPayment({
               confirmedDocument: true,
               consentToSimulatedPublication: true,
               termsVersion: terms.termsVersion,
-              requestKey: key(`prepare:${messageId}:${terms.termsVersion}`),
+              requestKey: key(`prepare:${messageId}:${terms.termsVersion}:${replacePaymentId ?? ""}`),
+              ...(replacePaymentId ? { replacePaymentId } : {}),
             },
             signal,
           ),
@@ -297,6 +300,20 @@ export function useReceptionPayment({
       retainPaymentId(next.paymentId);
       accept(next);
     } catch (error) {
+      if (replacePaymentId && error instanceof RequestError && error.status === 409) {
+        try {
+          const { payment } = await request((signal) => receptionPayments.current(signal));
+          if (payment && payment.paymentId !== replacePaymentId &&
+              paymentIdFromUrl() === replacePaymentId &&
+              latest.current.session?.sessionId === scope.session.sessionId) {
+            retainPaymentId(payment.paymentId);
+            accept(payment);
+            return;
+          }
+        } catch {
+          // The existing status notice explains how to verify the result.
+        }
+      }
       if (
         alive.current &&
         error instanceof RequestError &&
@@ -377,6 +394,15 @@ export function useReceptionPayment({
   const recoveryAvailable = Boolean(
     view?.refundRecoveryAvailable && !needsRead,
   );
+  const canReplace = Boolean(
+    view?.replacementAvailable && terms?.configured && matches &&
+    !active && !disabled && !needsRead,
+  );
+
+  function replaceOrder() {
+    if (view && canReplace && !busy)
+      void begin(view.documentMessageId, view.paymentId);
+  }
 
   const { createOrder, approve, cancelCheckout, checkoutError } =
     createPaymentCheckout({
@@ -449,6 +475,8 @@ export function useReceptionPayment({
     paid,
     refunded,
     recoveryAvailable,
+    canReplace,
+    replaceOrder,
     setOpen,
     stopCheckout,
     setRefundConfirmation,

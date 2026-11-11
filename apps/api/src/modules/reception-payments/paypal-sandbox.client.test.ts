@@ -99,3 +99,17 @@ test("optional config is disabled when absent and incomplete config is rejected"
     { clientId: "id", secret: "controlled" },
   );
 });
+
+test("only a specific PayPal order lookup 404 gets the missing order classification", async () => {
+  const client = new PayPalSandboxClient({ clientId: "id", secret: "secret" }, async (url) =>
+    String(url).endsWith("/token")
+      ? Response.json({ access_token: "controlled-unit-token", token_type: "Bearer", expires_in: 3600 })
+      : Response.json({ name: "RESOURCE_NOT_FOUND", details: [{ issue: "INVALID_RESOURCE_ID" }] }, { status: 404 }),
+  );
+  await assert.rejects(client.order("ORDER1"), (error) =>
+    error instanceof SandboxPaymentError && error.code === "PAYPAL_ORDER_NOT_FOUND" && error.outcome === "unknown",
+  );
+  await assert.rejects(client.capture("ORDER1", randomUUID()), (error) =>
+    error instanceof SandboxPaymentError && error.code === "PAYPAL_REQUEST_FAILED",
+  );
+});

@@ -56,6 +56,8 @@ The POC covers anonymous reception, requirements preparation and the Sandbox dem
 
 ## Run locally
 
+This repository provides the standalone POC. The hosted deployment includes its own runtime and exposes the **Continue working** control for paused Agent runs.
+
 Prerequisites: **Node 24.22.2**, **pnpm 10.32.1**, and **PostgreSQL 17+** or Docker Compose. The frontend and API are served from the same origin.
 
 Use `.node-version` or `.nvmrc` with your Node version manager. Check `node --version` and `pnpm --version` before installation; `.npmrc` enables strict engine checks so an incompatible toolchain fails instead of continuing with a warning.
@@ -100,6 +102,8 @@ Set `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` in local `.env` to the credent
 The checkout API, payment state machine, PayPal client and PostgreSQL payment adapter are grouped under `apps/api/src/modules/reception-payments/`. The reception application supplies session authorization and the confirmed-document reader. Frontend payment state, SDK callbacks and presentation are separated.
 
 The PayPal JS SDK loads after the user separately agrees to test checkout. A Sandbox buyer account may be needed in the PayPal window. The amount is **USD 500.00**, with test funds only. The page distinguishes a confirmed document, payment consent, verified receipt and simulated publication. Keep the temporary session cookie during the demonstration. Re-entering reception can recover that session's receipt even without a `paymentId` URL; later document revisions do not hide it. If a refund response is lost, check its status and explicitly choose recovery of the previous refund. Recovery reuses the original request within its idempotency window; loading the page and checking status do not issue refunds.
+
+If a status check confirms that an earlier test order is closed without a capture attempt, **Start a new test payment** lets you start again from the same confirmed document and approve checkout separately.
 
 ## Consultation trace viewer
 

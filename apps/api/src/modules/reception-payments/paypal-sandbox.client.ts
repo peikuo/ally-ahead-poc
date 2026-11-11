@@ -46,6 +46,10 @@ export interface SandboxPaymentPort {
   refundStatus(refundId: string): Promise<PayPalRefund>;
 }
 const base = "https://api-m.sandbox.paypal.com";
+const missingOrder = z.object({
+  name: z.literal("RESOURCE_NOT_FOUND"),
+  details: z.array(z.object({ issue: z.string() })).min(1),
+});
 export class PayPalSandboxClient implements SandboxPaymentPort {
   #token?: string;
   #expires = 0;
@@ -72,6 +76,16 @@ export class PayPalSandboxClient implements SandboxPaymentPort {
       throw new SandboxPaymentError("PAYPAL_RESPONSE_INVALID", "unknown");
     }
     if (!response.ok) {
+      if (
+        response.status === 404 &&
+        init.method === "GET" &&
+        /^\/v2\/checkout\/orders\/[A-Z0-9]+$/.test(path)
+      ) {
+        const parsed = missingOrder.safeParse(body);
+        if (parsed.success && parsed.data.details.every(({ issue }) => issue === "INVALID_RESOURCE_ID")) {
+          throw new SandboxPaymentError("PAYPAL_ORDER_NOT_FOUND", "unknown");
+        }
+      }
       // 5xx might have occurred after the mutation; query before any retry.
       throw new SandboxPaymentError(
         response.status === 401

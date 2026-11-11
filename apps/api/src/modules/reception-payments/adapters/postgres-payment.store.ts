@@ -45,7 +45,7 @@ export class PostgresPaymentStore
   }
   async insert(tx: Transaction, r: ReceptionPaymentRecord) {
     await tx.query(
-      "insert into payments(id,session_id,document_message_id,prepare_key,revision,record) values($1,$2,$3,$4,$5,$6)",
+      "insert into payments(id,session_id,document_message_id,prepare_key,revision,record,created_at) values($1,$2,$3,$4,$5,$6,$7)",
       [
         r.id,
         r.sessionId,
@@ -53,6 +53,7 @@ export class PostgresPaymentStore
         r.prepareRequestKey,
         r.revision,
         r,
+        r.createdAt,
       ],
     );
   }
