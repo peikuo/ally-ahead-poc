@@ -3,13 +3,13 @@
 An AI reception POC for the PayPal AI Hackathon. Ally Ahead helps a business turn an initial idea into a requirements specification that people can discuss, revise and explicitly approve before taking the next step.
 
 - [Try the POC](https://ally-poc.aixagent.cloud/)
-- [Watch the demo video](https://youtu.be/s--7eNOinEk)
+- [Watch the demo video](https://youtu.be/Mjy06sekjsI)
 
-The video follows a fictional business from its first conversation through requirements clarification, a **USD 500 PayPal Sandbox payment**, a verified receipt and simulated publication. A completed refund is not shown in the video. The app supports a separate, user-requested full test refund. Sandbox payments use test funds, and publication is simulated.
+The video follows a fictional business as it clarifies its needs and confirms a requirements document. It shows a separately approved **USD 500 PayPal Sandbox payment**, a verified receipt, and simulated publication. In a follow-up test, the user requests a full refund, PayPal confirms it, and Ally Ahead withdraws the simulated publication. All payments use test funds.
 
 ## Test the hosted demo
 
-You can use [the hosted POC](https://ally-poc.aixagent.cloud/) without an Ally Ahead account or your own merchant API credentials. To approve the test payment, use a PayPal Sandbox **Personal** account as the buyer.
+You can open [the hosted reception](https://ally-poc.aixagent.cloud/reception) without an Ally Ahead account or your own merchant API credentials. To approve the test payment, use a PayPal Sandbox **Personal** account as the buyer.
 
 ### Get a Sandbox buyer account
 
@@ -19,7 +19,7 @@ You can use [the hosted POC](https://ally-poc.aixagent.cloud/) without an Ally A
 
 ### Walk through payment and refund
 
-1. Open the hosted demo, switch to English if needed, and select **Start**. Describe a fictional business need, such as a repair shop that wants staff to log jobs and mark them open or closed.
+1. Open the hosted reception and switch to English if needed. Describe a fictional business need, such as a repair shop that wants staff to log jobs and mark them open or closed.
 2. Select **Generate document**. Review the report and, if needed, enter a change and select **Revise the document**. Review the updated version before selecting **Confirm document accuracy**. If the Agent pauses, close the document dialog if it is open, select **Continue working** in reception, and wait for the report.
 3. Select **Continue to simulated publication** and **Agree to terms and continue to payment**. Open PayPal, sign in with your Sandbox buyer and approve **USD 500.00** in test funds.
 4. Return to Ally Ahead and verify the payment receipt and simulated publication status. If the result is unclear, use **Check payment / refund status** before trying again. Keep the same browser session so you can reopen the receipt under **Test payment status**.
