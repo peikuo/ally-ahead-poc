@@ -57,6 +57,10 @@ try {
   await page.goto(origin);
   await page.getByRole("heading").first().waitFor();
   assert.equal(await page.title(), "Ally Ahead");
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await page.getByRole("button", { name: "中文", exact: true }).click();
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
   await page.screenshot({ path: shots + "/home-zh-desktop.png" });
   await page.getByRole("button", { name: "EN", exact: true }).click();
   assert.equal(await page.locator("html").getAttribute("lang"), "en");
@@ -116,7 +120,7 @@ try {
   assert.ok(paymentId);
   // Re-enter without a receipt URL: the server discovers only this session's payment.
   await page.goto(origin + "/reception");
-  await page.getByRole("button", { name: "EN", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await page.getByTestId("reception-payment-tools").click();
   await page
     .locator('[data-testid="reception-payment-state"][data-state="paid"]')
@@ -151,7 +155,7 @@ try {
     .click();
   // An unconfirmed replacement document must not hide the original paid receipt/refund.
   await page.goto(origin + "/reception");
-  await page.getByRole("button", { name: "EN", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await page.getByTestId("reception-payment-tools").click();
   await page
     .locator('[data-testid="reception-payment-state"][data-state="paid"]')
@@ -176,7 +180,7 @@ try {
   await page.screenshot({ path: shots + "/refund-response-lost-desktop.png" });
   // Discovery and status reads never repeat the refund; recovery requires fresh explicit consent.
   await page.goto(origin + "/reception");
-  await page.getByRole("button", { name: "EN", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await page.getByTestId("reception-payment-tools").click();
   await page
     .locator('[data-testid="reception-payment-state"][data-state="unknown"]')
@@ -205,7 +209,7 @@ try {
   assert.equal(f.calls.refund, 2);
   assert.equal(f.refundKeys[0], f.refundKeys[1]);
   await page.reload();
-  await page.getByRole("button", { name: "EN", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await page.getByTestId("reception-payment-tools").click();
   await page
     .locator('[data-testid="reception-payment-state"][data-state="refunded"]')

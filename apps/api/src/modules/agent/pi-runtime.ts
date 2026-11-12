@@ -14,7 +14,7 @@ import { decodeReceptionPresentation, ReceptionPresentation } from "@ally-ahead/
 import { receptionProgressContext, sanitizeReceptionProgress } from "./reception-progress.js";
 import { traceFailure } from "./trace/agent-trace.js";
 import { applicationSkills, applicationSkillText, createApplicationSkillRead } from "./skills/native-skills.js";
-import { prepareRequirementsDocument } from "./requirements-document.js";
+import { assembleRequirementsDocument, isRequirementsDocumentDraft, parseRequirementsEvidenceRefs, prepareRequirementsDocument, requirementsDocumentDelivery } from "./requirements-document.js";
 import { prepareReceptionSkills } from "./skills/reception-skills.js";
 import { parseReceptionOutput, declaredReceptionInteraction, receptionOutputIssues } from "./reception-output.js";
 export { VIRTUAL_CWD, SYSTEM_PROMPT } from "./agent-policy.js";
@@ -82,7 +82,7 @@ export class PiRuntime implements AgentRuntime {
     // elects to read its skill. Provision only this task's current application body;
     // never fabricate an assistant read call or persist synthetic native history.
     const requirementsSkillBody=requirements.request?applicationSkillText("requirements-document"):undefined;
-    const requirementsTaskContext=requirementsSkillBody?`\n【当前明确任务：生成或修改需求文档】\nThe user explicitly requested a requirements document. The application has loaded the complete current requirements-document skill below. Follow it without another read. Plan and use tools as needed; intermediate communicate updates may continue work, but the final reply must contain a complete requirements_document interaction. A speech-only reply, offer, or claim of completion cannot complete this task.\n${requirementsSkillBody}\n`:"";
+    const requirementsTaskContext=requirementsSkillBody?`\n【当前明确任务：生成或修改需求文档】\nThe user explicitly requested a requirements document. The application has loaded the complete current requirements-document skill below. Follow it without another read. Plan and use tools as needed; intermediate communicate updates may continue work, but the final reply must deliver the complete report in the specified document format. A speech-only reply, offer, or claim of completion cannot complete this task.\n${requirementsSkillBody}\n`:"";
     if(requirementsSkillBody)await emit("task_skill_loaded",{task:"requirements-document",requestKind:requirements.request!.kind,source:"application-task-context",skillHash:createHash("sha256").update(requirementsSkillBody).digest("hex")});
     const effectiveSystemPrompt=SYSTEM_PROMPT + (customTools.length?receptionKnowledgeInstructions:"") + "\n" + skills.instructions;
     // Trusted, ephemeral run-start context. Never persisted as arbitrary system history.
@@ -116,6 +116,7 @@ export class PiRuntime implements AgentRuntime {
       queue = queue.then(async()=>{ if(failure) return; await fn(); }).catch(error=>{failure=error; void session.abort();});
     };
     let corrections=0, correctionFeedback="", approved:SessionEntry|undefined;
+    let retainedReport:ReturnType<typeof assembleRequirementsDocument>;
     let expectedInteraction:string|undefined; // Current unapproved delivery only.
     let deliveryCount=0;
     const rejectedDraftIds=new Set<string>();
@@ -178,7 +179,13 @@ export class PiRuntime implements AgentRuntime {
         await input.save(entry);durableParent=entry.id;saved++;
       }
     };
-    const correctionInstruction=(issue:string)=>`The previous assistant draft failed validation: ${issue}. ${issue==="UNAPPROVED_CASE_REFERENCE"?"Call case_read to verify a valid relevant case before citing, or remove unsupported case claims and IDs. Tools remain available.":""} Repair the previous answer using the original user input and provided evidence. Preserve its meaning and deliverable; do not invent facts or quotes. ${expectedInteraction?`This reply declared interaction.type=${expectedInteraction}. Regenerate that complete component and validate its evidence; do not replace it with null or a different component. Rejected drafts are not approved content: never copy unsupported evidence.`:""} Speech and interaction must agree. Do not claim to show a card that is absent. If JSON syntax is wrong, repair the entire answer, not just its opening speech. Deliver one complete object with speech and interaction via communicate if continuing work, or as final JSON when stopping. No code fence or surrounding text. This is internal validation feedback, not a new user request.`;
+    const correctionInstruction=(issue:string,delivery:"final"|"intermediate")=>{
+      if(delivery==="final"&&requirements.request){
+        if(retainedReport)return "The report is retained. Correct only the evidence selection. Return a JSON array of distinct integer ref values listed in userSources. No IDs, quotes, Markdown or surrounding text. Use [] only if there are no citable business facts.";
+        return `The report failed validation: ${issue}. Preserve supported facts and complete the report. ${requirementsDocumentDelivery(requirements.english)}`;
+      }
+      return `The previous assistant draft failed validation: ${issue}. ${issue==="UNAPPROVED_CASE_REFERENCE"?"Call case_read to verify a valid relevant case before citing, or remove unsupported case claims and IDs. Tools remain available.":""} Repair the previous answer using the original user input and provided evidence. Preserve its meaning and deliverable; do not invent facts or quotes. ${expectedInteraction?`This reply declared interaction.type=${expectedInteraction}. Regenerate that complete component and validate its evidence; do not replace it with null or a different component. Rejected drafts are not approved content: never copy unsupported evidence.`:""} Speech and interaction must agree. Do not claim to show a card that is absent. If JSON syntax is wrong, repair the entire answer, not just its opening speech. Deliver one complete object with speech and interaction via communicate if continuing work, or as final JSON when stopping. No code fence or surrounding text. This is internal validation feedback, not a new user request.`;
+    };
     const validateDelivery=async(raw:string,stopReason:string,delivery:"final"|"intermediate")=>{
       let value:unknown, reply="", issue="", compensation:string[]=[];
       // The explicit task's deliverable outranks an accidental model-declared
@@ -186,11 +193,28 @@ export class PiRuntime implements AgentRuntime {
       if(delivery==="final"&&requirements.request)expectedInteraction="requirements_document";
       expectedInteraction??=declaredReceptionInteraction(raw);
       try{
-        if(stopReason==="length")throw new Error("OUTPUT_TRUNCATED: shorten the answer and return complete JSON");
-        const parsed=parseReceptionOutput(raw);value=parsed.value;compensation=parsed.compensation;
+        if(stopReason==="length")throw new Error("OUTPUT_TRUNCATED: shorten the response and complete the delivery");
+        const documentTask=delivery==="final"&&requirements.request;
+        if(delivery==="final"&&!documentTask&&isRequirementsDocumentDraft(raw))
+          throw Error("REQUIREMENTS_DOCUMENT_REQUEST_REQUIRED");
+        const report=documentTask
+          ? retainedReport
+            ? {...retainedReport,interaction:{...retainedReport.interaction,evidence:requirements.resolveEvidence(parseRequirementsEvidenceRefs(raw))}}
+            : assembleRequirementsDocument(raw,requirements.english,requirements.resolveEvidence)
+          : undefined;
+        const parsed=report
+          ? {value:report,compensation:[retainedReport?"evidence_only_repair":"requirements_document_markdown_assembled"]}
+          : parseReceptionOutput(raw);
+        value=parsed.value;compensation=parsed.compensation;
+        const localRepair=requirements.repairEvidence(value);
+        value=localRepair.value;compensation.push(...localRepair.compensation);
         expectedInteraction??=declaredReceptionInteraction(raw,value);
         const issues=receptionOutputIssues(value);
-        if(issues.length)throw new Error(issues.join("; "));
+        if(issues.length){
+          if(report&&issues.every(path=>path.startsWith("interaction.evidence")))retainedReport=report;
+          throw new Error(issues.join("; "));
+        }
+        if(documentTask)retainedReport=undefined;
         const candidate=ReceptionPresentation.parse(value);
         if(delivery==="final")requirements.validateFinal(candidate);
         const speechIssue=receptionSpeechQualityIssue(candidate.speech,input.inputText);
@@ -221,7 +245,7 @@ export class PiRuntime implements AgentRuntime {
           await emit("output_correction_exhausted",{delivery:"intermediate",toolCallId,reason:issue,corrections});
           failure=new Error("OUTPUT_VALIDATION_FAILED");throw failure;
         }
-        corrections++;correctionFeedback=correctionInstruction(issue)+(issue.startsWith("COMMUNICATE_ARGUMENTS_INVALID")?" Pass actual JSON values: interaction must be an object or null, progress if present an object, and caseReferences an array. Never JSON-stringify nested values.":"")+(issue==="COMMUNICATE_USE_FINAL_REPLY_FOR_USER_INPUT"?" Ask the question as the final reply and end this run, not through communicate.":"");
+        corrections++;correctionFeedback=correctionInstruction(issue,"intermediate")+(issue.startsWith("COMMUNICATE_ARGUMENTS_INVALID")?" Pass actual JSON values: interaction must be an object or null, progress if present an object, and caseReferences an array. Never JSON-stringify nested values.":"")+(issue==="COMMUNICATE_USE_FINAL_REPLY_FOR_USER_INPUT"?" Ask the question as the final reply and end this run, not through communicate.":"");
         await emit("output_correction",{requestNumber,delivery:"intermediate",toolCallId,correction:corrections,reason:issue,feedback:correctionFeedback});
         await input.snapshot(`repair:${deliveryCount}:${corrections}`,JSON.stringify({speech:/[\u3400-\u9fff]/u.test(input.inputText)?"这段内容还需要核对，我正在调整。":"I’m checking this part before sharing it.",interaction:null}));
         const result:CommunicationResult={status:"rejected",reason:correctionFeedback.slice(0,4000),remainingCorrections:this.correctionPolicy.maxCorrections-corrections,expectedInteraction:expectedInteraction??null};
@@ -254,7 +278,7 @@ export class PiRuntime implements AgentRuntime {
       // Missing sample input has a deterministic, safe recovery: ask for it.
       // Other validation failures are returned to the Agent for correction.
       if(issue==="REQUIREMENTS_DOCUMENT_REQUEST_REQUIRED"||issue==="REQUIREMENTS_DOCUMENT_SOURCE_NOT_FOUND"){
-        const english=!/[\u3400-\u9fff]/u.test(input.inputText),missing=issue==="REQUIREMENTS_DOCUMENT_SOURCE_NOT_FOUND";
+        const english=requirements.english,missing=issue==="REQUIREMENTS_DOCUMENT_SOURCE_NOT_FOUND";
         reply=JSON.stringify({speech:missing?(english?"I couldn’t find that saved document in this conversation. Please open the document you want to revise first.":"当前会话里没有找到要修改的那份文档，请先打开对应文档再修改。"):(english?"We can keep discussing your needs. Generate the document when you explicitly choose to do so.":"可以继续补充需求；你明确选择生成时，我再整理成文档。"),interaction:missing?null:{type:"requirements_document_offer",title:english?"Requirements document":"需求文档",prompt:english?"Generate a document when you are ready, or keep discussing.":"准备好时可以生成需求文档，也可以继续沟通。"}});
         await emit("skill_recovery",{skill:"requirements-document",reason:issue,replacementText:reply});issue="";
       }
@@ -269,9 +293,9 @@ export class PiRuntime implements AgentRuntime {
           const rejected=manager.getEntries().findLast(entry=>entry.type==="message"&&entry.message.role==="assistant");
           if(rejected)rejectedDraftIds.add(rejected.id);
           corrections++;
-          correctionFeedback=correctionInstruction(issue);
+          correctionFeedback=correctionInstruction(issue,"final");
           await emit("output_correction",{requestNumber,correction:corrections,reason:issue,feedback:correctionFeedback});
-          const english=!/[\u3400-\u9fff]/u.test(input.inputText);
+          const english=requirements.english;
           await input.snapshot(`repair:${deliveryCount}:${corrections}`,JSON.stringify({speech:english?(corrections===1?"The reply needs an adjustment. I’m working on it.":"I’m checking the reply again. One moment."):(corrections===1?"刚才的回复有些问题，我正在调整。":"还需要核对一下，稍等。"),interaction:null}));
           await previousFinishTurn?.(turn,signal);
           return {action:"continue"};
@@ -344,6 +368,9 @@ export class PiRuntime implements AgentRuntime {
         {role:"system",content:dynamicContext,timestamp:0},
         ...messages.slice(currentUserIndex),
         ...(deliveryCount?[{role:"system" as const,content:deliveredContinuationInstruction,timestamp:0}]:[]),
+        ...(requirements.request?[{role:"system" as const,content:retainedReport
+          ?"The report is retained. Reply only with the corrected source-reference array."
+          :requirementsDocumentDelivery(requirements.english),timestamp:0}]:[]),
         ...(correctionFeedback?[{role:"system" as const,content:correctionFeedback,timestamp:0}]:[]),
       ]};
       if(Math.ceil(Buffer.byteLength(JSON.stringify(outgoing.messages),"utf8")*0.625)+model.maxTokens+2000>model.contextWindow)throw new Error("MODEL_CONTEXT_BUDGET_EXCEEDED");
@@ -384,7 +411,7 @@ export class PiRuntime implements AgentRuntime {
         pendingText += event.assistantMessageEvent.delta;
         // This is a bounded cumulative slot, never a durable per-token event log.
         if(Buffer.byteLength(pendingText,"utf8") > 240000) {failure=new Error("SNAPSHOT_LIMIT");void session.abort();return;}
-        if(!corrections&&Date.now()-lastFlush >= this.snapshotIntervalMs&&Buffer.byteLength(JSON.stringify({messageKey,text:pendingText,progress:"responding"}),"utf8")+64<=32768) {
+        if(!requirements.request&&!corrections&&Date.now()-lastFlush >= this.snapshotIntervalMs&&Buffer.byteLength(JSON.stringify({messageKey,text:pendingText,progress:"responding"}),"utf8")+64<=32768) {
           latestSnapshot={text:pendingText,key:messageKey};
           if(!snapshotQueued) {
             snapshotQueued=true;lastFlush=Date.now();

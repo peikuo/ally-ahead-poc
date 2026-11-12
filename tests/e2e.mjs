@@ -267,11 +267,20 @@ try {
     "Retry preserves supplement index",
   );
   const evidence = [{ messageId: first.inputMessageId, quote: input }];
+  const markdown = "# Invoice review\n\n## Approval\n\nClerks compare invoices against orders and send exceptions for human review.";
+  const requestCount = f.observations.length;
   const v = await send(formatRequirementsDocumentRequest("en"), [
-    document(evidence),
+    markdown + "\n\n--- USER EVIDENCE ---\n[999]",
+    "[1]",
   ]);
   let current = deriveRequirementsDocumentState(v.messages).current;
   assert.ok(current);
+  assert.equal(current.document.markdown, markdown);
+  assert.deepEqual(current.document.evidence, evidence);
+  assert.equal(f.observations.length - requestCount, 2);
+  assert.ok(f.observations.at(-1).messages.some(message =>
+    message.role === "system" && String(message.content).includes("Correct only the evidence selection")));
+
   const terms = await json("reception/poc-payments/terms");
   const prepare = {
     documentMessageId: current.messageId,
